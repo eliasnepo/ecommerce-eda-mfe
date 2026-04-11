@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // empty' | { read -r f; [ -n \"$f\" ] && echo \"$f\" | grep -qE '(/graphql/[^/]+\\.graphqls|/controller/[^/]+\\.java|/router/[^/]+\\.java|/routes/[^/]+\\.java|/api-gateway/src/main/resources/application[^/]*\\.(yml|yaml))$' && printf '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"API contract file changed -- update postman/ecommerce.postman_collection.json to reflect any new, removed, or modified endpoints.\"}}'; } 2>/dev/null || true",
+            "statusMessage": "Checking if API contract changed..."
+          }
+        ]
+      }
+    ]
+  }
+}
