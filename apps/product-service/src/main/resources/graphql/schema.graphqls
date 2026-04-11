@@ -1,0 +1,27 @@
+type Query {
+  products(filter: ProductFilter, page: Int, size: Int): ProductPage!
+  product(id: ID!): Product
+}
+
+input ProductFilter {
+  query: String
+  category: String
+  minPrice: Float
+  maxPrice: Float
+}
+
+type Product {
+  id: ID!
+  name: String!
+  description: String
+  price: Float!
+  category: String
+  imageUrl: String
+}
+
+type ProductPage {
+  content: [Product!]!
+  totalElements: Int!
+  totalPages: Int!
+  currentPage: Int!
+}

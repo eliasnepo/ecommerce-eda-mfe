@@ -1,0 +1,496 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-123456789abc",
+    "name": "Ecommerce EDA MFE",
+    "description": "Full system collection for the Ecommerce EDA MFE platform.\n\nServices:\n- **API Gateway** — :8080 (Phase 3, not yet implemented)\n- **Product Service** — :8081 (Phase 2 ✅)\n- **Order Service** — :8082 (Phase 6, not yet implemented)\n- **AI Service** — :8083 (Phase 7, not yet implemented)\n\nPrerequisites:\n1. `docker compose up -d` from repo root\n2. Start the relevant service(s)\n3. Select the **Ecommerce — Local** environment",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Product Service",
+      "description": "Spring Boot + GraphQL service on :8081. Manages canonical product data in PostgreSQL and indexes it in Elasticsearch.\n\nStart: `./gradlew bootRun --args='--spring.profiles.active=local'` from `apps/product-service/`",
+      "item": [
+        {
+          "name": "Actuator",
+          "item": [
+            {
+              "name": "Health",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{product_service_url}}/actuator/health",
+                  "host": ["{{product_service_url}}"],
+                  "path": ["actuator", "health"]
+                },
+                "description": "Returns `{\"status\":\"UP\"}` when Postgres and Elasticsearch connections are healthy."
+              },
+              "response": []
+            },
+            {
+              "name": "Info",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{product_service_url}}/actuator/info",
+                  "host": ["{{product_service_url}}"],
+                  "path": ["actuator", "info"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Metrics",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{product_service_url}}/actuator/metrics",
+                  "host": ["{{product_service_url}}"],
+                  "path": ["actuator", "metrics"]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "GraphQL",
+          "item": [
+            {
+              "name": "Get All Products",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "const content = json?.data?.products?.content;",
+                      "if (content && content.length > 0) {",
+                      "    pm.environment.set('product_id', content[0].id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"{ products { content { id name price category imageUrl } totalElements totalPages currentPage } }\"\n}"
+                },
+                "url": {
+                  "raw": "{{product_service_url}}/graphql",
+                  "host": ["{{product_service_url}}"],
+                  "path": ["graphql"]
+                },
+                "description": "Returns the first page (size 20) of all products. Saves the first result's `id` into `{{product_id}}` for downstream requests."
+              },
+              "response": []
+            },
+            {
+              "name": "Get All Products — Page 2",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"{ products(page: 1, size: 20) { content { id name price category } totalElements totalPages currentPage } }\"\n}"
+                },
+                "url": {
+                  "raw": "{{product_service_url}}/graphql",
+                  "host": ["{{product_service_url}}"],
+                  "path": ["graphql"]
+                },
+                "description": "Fetches the second page of products (zero-based index)."
+              },
+              "response": []
+            },
+            {
+              "name": "Search by Text Query",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"{ products(filter: { query: \\\"headphones\\\" }) { content { id name price category } totalElements } }\"\n}"
+                },
+                "url": {
+                  "raw": "{{product_service_url}}/graphql",
+                  "host": ["{{product_service_url}}"],
+                  "path": ["graphql"]
+                },
+                "description": "Full-text MultiMatch query across `name` (boosted ×2) and `description` in Elasticsearch. Results are ranked by relevance score."
+              },
+              "response": []
+            },
+            {
+              "name": "Filter by Category",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"{ products(filter: { category: \\\"Electronics\\\" }) { content { id name price category } totalElements } }\"\n}"
+                },
+                "url": {
+                  "raw": "{{product_service_url}}/graphql",
+                  "host": ["{{product_service_url}}"],
+                  "path": ["graphql"]
+                },
+                "description": "Exact keyword filter on the `category` field. Available values: Electronics, Clothing, Books, Home & Kitchen, Sports."
+              },
+              "response": []
+            },
+            {
+              "name": "Filter by Category + Max Price",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"{ products(filter: { category: \\\"Electronics\\\", maxPrice: 100 }) { content { id name price category } totalElements } }\"\n}"
+                },
+                "url": {
+                  "raw": "{{product_service_url}}/graphql",
+                  "host": ["{{product_service_url}}"],
+                  "path": ["graphql"]
+                },
+                "description": "Category keyword filter combined with an upper price bound (ES range query on `price`)."
+              },
+              "response": []
+            },
+            {
+              "name": "Filter by Price Range",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"{ products(filter: { minPrice: 50, maxPrice: 200 }) { content { id name price category } totalElements } }\"\n}"
+                },
+                "url": {
+                  "raw": "{{product_service_url}}/graphql",
+                  "host": ["{{product_service_url}}"],
+                  "path": ["graphql"]
+                },
+                "description": "Price range filter — returns products priced between $50 and $200."
+              },
+              "response": []
+            },
+            {
+              "name": "Full Filter (Text + Category + Price Range)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"{ products(filter: { query: \\\"keyboard\\\", category: \\\"Electronics\\\", minPrice: 20, maxPrice: 300 }) { content { id name price category } totalElements } }\"\n}"
+                },
+                "url": {
+                  "raw": "{{product_service_url}}/graphql",
+                  "host": ["{{product_service_url}}"],
+                  "path": ["graphql"]
+                },
+                "description": "All filter fields active at once: full-text must clause + category term filter + price range filter."
+              },
+              "response": []
+            },
+            {
+              "name": "Get Product by ID",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"query GetProduct($id: ID!) { product(id: $id) { id name description price category imageUrl } }\",\n  \"variables\": {\n    \"id\": \"{{product_id}}\"\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{product_service_url}}/graphql",
+                  "host": ["{{product_service_url}}"],
+                  "path": ["graphql"]
+                },
+                "description": "Fetches a single product by UUID from Postgres. Run 'Get All Products' first to populate `{{product_id}}`, or paste a UUID manually."
+              },
+              "response": []
+            },
+            {
+              "name": "Get Product by ID — Not Found",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"query GetProduct($id: ID!) { product(id: $id) { id name price } }\",\n  \"variables\": {\n    \"id\": \"00000000-0000-0000-0000-000000000000\"\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{product_service_url}}/graphql",
+                  "host": ["{{product_service_url}}"],
+                  "path": ["graphql"]
+                },
+                "description": "Expects `null` for the `product` field — verifies the null-safe resolver path."
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Order Service",
+      "description": "Spring Boot (Kotlin) REST service on :8082. Persists orders in PostgreSQL and publishes OrderCreated events to Kafka.\n\n⚠️ Not yet implemented — Phase 6.",
+      "item": [
+        {
+          "name": "Actuator",
+          "item": [
+            {
+              "name": "Health",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{order_service_url}}/actuator/health",
+                  "host": ["{{order_service_url}}"],
+                  "path": ["actuator", "health"]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Orders",
+          "item": [
+            {
+              "name": "Place Order",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "if (json?.id) {",
+                      "    pm.environment.set('order_id', json.id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": {{user_id}},\n  \"items\": [\n    {\n      \"productId\": \"{{product_id}}\",\n      \"productName\": \"Wireless Headphones\",\n      \"unitPrice\": 49.99,\n      \"quantity\": 2\n    }\n  ]\n}"
+                },
+                "url": {
+                  "raw": "{{order_service_url}}/api/orders",
+                  "host": ["{{order_service_url}}"],
+                  "path": ["api", "orders"]
+                },
+                "description": "Places a new order. Persists to Postgres and publishes an `OrderCreated` event to the `order.created` Kafka topic. Saves the returned `id` into `{{order_id}}`."
+              },
+              "response": []
+            },
+            {
+              "name": "Get Order by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{order_service_url}}/api/orders/{{order_id}}",
+                  "host": ["{{order_service_url}}"],
+                  "path": ["api", "orders", "{{order_id}}"]
+                },
+                "description": "Fetches a single order by UUID. Run 'Place Order' first to populate `{{order_id}}`."
+              },
+              "response": []
+            },
+            {
+              "name": "Get Orders by User",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{order_service_url}}/api/orders/user/{{user_id}}",
+                  "host": ["{{order_service_url}}"],
+                  "path": ["api", "orders", "user", "{{user_id}}"]
+                },
+                "description": "Lists all orders for a given user ID."
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AI Service",
+      "description": "Spring Boot + Spring AI service on :8083. Consumes OrderCreated events from Kafka and exposes product recommendations backed by an LLM.\n\n⚠️ Not yet implemented — Phase 7.",
+      "item": [
+        {
+          "name": "Actuator",
+          "item": [
+            {
+              "name": "Health",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{ai_service_url}}/actuator/health",
+                  "host": ["{{ai_service_url}}"],
+                  "path": ["actuator", "health"]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Recommendations",
+          "item": [
+            {
+              "name": "Get Recommendations for User",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{ai_service_url}}/api/ai/recommendations/{{user_id}}",
+                  "host": ["{{ai_service_url}}"],
+                  "path": ["api", "ai", "recommendations", "{{user_id}}"]
+                },
+                "description": "Builds a prompt from the user's order history and calls the configured LLM (OpenAI / Ollama / Anthropic). Returns up to 3 ranked product suggestions with a reason for each."
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "API Gateway",
+      "description": "Spring Cloud Gateway on :8080. Routes all client traffic to downstream services.\n\n⚠️ Not yet implemented — Phase 3.",
+      "item": [
+        {
+          "name": "Actuator",
+          "item": [
+            {
+              "name": "Health",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{gateway_url}}/actuator/health",
+                  "host": ["{{gateway_url}}"],
+                  "path": ["actuator", "health"]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Products (via Gateway)",
+          "item": [
+            {
+              "name": "Get All Products",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"{ products { content { id name price category } totalElements totalPages currentPage } }\"\n}"
+                },
+                "url": {
+                  "raw": "{{gateway_url}}/graphql",
+                  "host": ["{{gateway_url}}"],
+                  "path": ["graphql"]
+                },
+                "description": "Same query as the direct Product Service call, but routed through the API Gateway."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Orders (via Gateway)",
+          "item": [
+            {
+              "name": "Place Order",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": {{user_id}},\n  \"items\": [\n    {\n      \"productId\": \"{{product_id}}\",\n      \"productName\": \"Wireless Headphones\",\n      \"unitPrice\": 49.99,\n      \"quantity\": 2\n    }\n  ]\n}"
+                },
+                "url": {
+                  "raw": "{{gateway_url}}/api/orders",
+                  "host": ["{{gateway_url}}"],
+                  "path": ["api", "orders"]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Recommendations (via Gateway)",
+          "item": [
+            {
+              "name": "Get Recommendations for User",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{gateway_url}}/api/ai/recommendations/{{user_id}}",
+                  "host": ["{{gateway_url}}"],
+                  "path": ["api", "ai", "recommendations", "{{user_id}}"]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "product_id",
+      "value": ""
+    },
+    {
+      "key": "order_id",
+      "value": ""
+    }
+  ]
+}

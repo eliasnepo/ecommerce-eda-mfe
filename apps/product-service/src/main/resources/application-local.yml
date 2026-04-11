@@ -1,0 +1,9 @@
+spring:
+  graphql:
+    graphiql:
+      enabled: true
+
+logging:
+  level:
+    com.ecommerce: DEBUG
+    org.springframework.graphql: DEBUG

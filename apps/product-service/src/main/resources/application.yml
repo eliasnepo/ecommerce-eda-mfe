@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: product-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ecommerce
+    username: ecommerce
+    password: ecommerce
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: product
+    open-in-view: false
+
+  flyway:
+    schemas: product
+    baseline-on-migrate: true
+
+  elasticsearch:
+    uris: http://localhost:9200
+
+  graphql:
+    graphiql:
+      enabled: false
+
+server:
+  port: 8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
