@@ -13,7 +13,9 @@ Stand up the local infrastructure stack (PostgreSQL, Elasticsearch, Kafka) via D
 
 ### Deliverables
 
-#### `docker-compose.yml` (repo root)
+Two Docker Compose files live at the repo root — one for infrastructure, one for application services. This allows the infra stack to be started independently (and kept running) while individual services are restarted during development.
+
+#### `docker-compose.infra.yml` (repo root)
 
 ```yaml
 version: '3.9'
@@ -76,7 +78,7 @@ volumes:
 ```
 
 ### Acceptance criteria — Phase 1
-- `docker compose up -d` starts all three services without errors.
+- `docker compose -f docker-compose.infra.yml up -d` starts all three infra services without errors.
 - `curl http://localhost:9200` returns a JSON response with Elasticsearch cluster info.
 - `psql -h localhost -U ecommerce -d ecommerce -c "\l"` lists the `ecommerce` database.
 - Kafka responds to `kafka-broker-api-versions.sh --bootstrap-server localhost:9092`.
@@ -681,7 +683,7 @@ public class ElasticsearchConfig extends ElasticsearchConfiguration {
 
 | # | Criterion |
 |---|-----------|
-| 1 | `docker compose up -d` starts Postgres, ES, and Kafka. |
+| 1 | `docker compose -f docker-compose.infra.yml up -d` starts Postgres, ES, and Kafka. |
 | 2 | `./gradlew bootRun --args='--spring.profiles.active=local'` starts the service on port 8081 without errors. |
 | 3 | Flyway applies `V1__create_product_table.sql` and creates the `product.products` table on first start. |
 | 4 | Running with `local` profile inserts 100 products into Postgres and indexes them in Elasticsearch. Subsequent restarts are idempotent (no duplicate inserts). |

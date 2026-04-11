@@ -161,7 +161,7 @@ input ProductFilter {
 - Distributed tracing must be supported (Micrometer Tracing + Zipkin, optional for PoC).
 
 ### 5.5 Developer Experience
-- The entire system must start locally with a single `docker compose up` command.
+- The entire system must start locally with `docker compose -f docker-compose.infra.yml up -d` (infrastructure) then `docker compose -f docker-compose.services.yml up -d` (application services).
 - Each service must have a `README.md` with setup instructions.
 
 ---
@@ -222,7 +222,7 @@ The PoC is considered complete when:
 - [ ] Placing an order publishes an event consumed by the AI Service via Kafka.
 - [ ] The AI Service returns at least one product recommendation based on order history.
 - [ ] The Shell loads both MFEs lazily and renders them without a full page reload.
-- [ ] All services start with `docker compose up` and pass their `/actuator/health` check.
+- [ ] All services start with `docker compose -f docker-compose.infra.yml up -d` (infrastructure) followed by `docker compose -f docker-compose.services.yml up -d` (applications) and pass their `/actuator/health` check.
 
 ---
 

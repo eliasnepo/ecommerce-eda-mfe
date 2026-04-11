@@ -459,6 +459,10 @@ spring:
 
 ## 7. Docker Compose
 
+Docker Compose is split into two files to allow infrastructure and application services to be started independently.
+
+**`docker-compose.infra.yml`** — infrastructure only (Postgres, Elasticsearch, Kafka):
+
 ```yaml
 version: '3.9'
 services:
@@ -491,92 +495,123 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+```
+
+**`docker-compose.services.yml`** — application services (Gateway + backends):
+
+```yaml
+version: '3.9'
+services:
 
   gateway:
-    build: ./ecommerce-gateway
+    build: ./apps/ecommerce-gateway
     ports:
       - "8080:8080"
     depends_on: [product-service, order-service, ai-service]
+    environment:
+      SPRING_CLOUD_GATEWAY_ROUTES_0_URI: http://product-service:8081
+      SPRING_CLOUD_GATEWAY_ROUTES_1_URI: http://order-service:8082
+      SPRING_CLOUD_GATEWAY_ROUTES_2_URI: http://ai-service:8083
 
   product-service:
-    build: ./product-service
+    build: ./apps/product-service
     ports:
       - "8081:8081"
-    depends_on: [postgres, elasticsearch]
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ecommerce
       SPRING_ELASTICSEARCH_URIS: http://elasticsearch:9200
 
   order-service:
-    build: ./order-service
+    build: ./apps/order-service
     ports:
       - "8082:8082"
-    depends_on: [postgres, kafka]
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ecommerce
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
   ai-service:
-    build: ./ai-service
+    build: ./apps/ai-service
     ports:
       - "8083:8083"
-    depends_on: [kafka]
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       OPENAI_API_KEY: ${OPENAI_API_KEY}
 ```
+
+**Startup sequence:**
+
+```bash
+# 1. Start infrastructure first
+docker compose -f docker-compose.infra.yml up -d
+
+# 2. Start application services (once Dockerfiles exist for each service)
+docker compose -f docker-compose.services.yml up -d
+```
+
+> For local development (running services directly on the host via `./gradlew bootRun`), only step 1 is needed — the `application.yml` in each service already targets `localhost` URIs.
 
 ---
 
 ## 8. Repository Structure
 
 ```
-ecommerce-poc/
-├── docker-compose.yml
-├── ecommerce-gateway/
-│   ├── src/
-│   └── build.gradle
-├── product-service/
-│   ├── src/
-│   │   └── main/
-│   │       ├── java/com/ecommerce/product/
-│   │       │   ├── controller/       ← GraphQL resolvers
-│   │       │   ├── domain/           ← JPA entities
-│   │       │   ├── repository/       ← JPA + ES repositories
-│   │       │   ├── search/           ← ES documents + search service
-│   │       │   └── service/
-│   │       └── resources/
-│   │           ├── graphql/schema.graphqls
-│   │           └── application.yml
-│   └── build.gradle
-├── order-service/
-│   ├── src/main/java/com/ecommerce/order/
-│   │   ├── controller/
-│   │   ├── domain/
-│   │   ├── event/                    ← Kafka event classes
-│   │   ├── repository/
-│   │   └── service/
-│   └── build.gradle
-├── ai-service/
-│   ├── src/main/java/com/ecommerce/ai/
-│   │   ├── controller/
-│   │   ├── consumer/                 ← Kafka listener
-│   │   ├── prompt/                   ← prompt templates
-│   │   ├── repository/
-│   │   └── service/
-│   └── build.gradle
-├── mfe-shell/
-│   ├── src/
-│   ├── webpack.config.js
-│   └── package.json
-├── mfe-catalog/
-│   ├── src/
-│   ├── webpack.config.js
-│   └── package.json
-└── mfe-cart/
-    ├── src/
-    ├── webpack.config.js
-    └── package.json
+ecommerce-eda-mfe/
+├── docker-compose.infra.yml          ← Postgres, Elasticsearch, Kafka
+├── docker-compose.services.yml       ← Gateway + backend application services
+├── apps/
+│   ├── ecommerce-gateway/            ← Spring Cloud Gateway (port 8080)
+│   │   ├── src/main/java/com/ecommerce/gateway/
+│   │   │   ├── GatewayApplication.java
+│   │   │   └── filter/
+│   │   │       └── CorrelationIdFilter.java
+│   │   ├── src/main/resources/
+│   │   │   ├── application.yml
+│   │   │   └── application-local.yml
+│   │   └── build.gradle
+│   ├── product-service/              ← GraphQL + Elasticsearch (port 8081)
+│   │   ├── src/
+│   │   │   └── main/
+│   │   │       ├── java/com/ecommerce/product/
+│   │   │       │   ├── controller/   ← GraphQL resolvers
+│   │   │       │   ├── domain/       ← JPA entities
+│   │   │       │   ├── repository/   ← JPA + ES repositories
+│   │   │       │   ├── search/       ← ES documents + search service
+│   │   │       │   └── service/
+│   │   │       └── resources/
+│   │   │           ├── graphql/schema.graphqls
+│   │   │           └── application.yml
+│   │   └── build.gradle
+│   ├── order-service/                ← REST + Kafka producer (port 8082, planned)
+│   │   ├── src/main/java/com/ecommerce/order/
+│   │   │   ├── controller/
+│   │   │   ├── domain/
+│   │   │   ├── event/                ← Kafka event classes
+│   │   │   ├── repository/
+│   │   │   └── service/
+│   │   └── build.gradle
+│   ├── ai-service/                   ← Spring AI + Kafka consumer (port 8083, planned)
+│   │   ├── src/main/java/com/ecommerce/ai/
+│   │   │   ├── controller/
+│   │   │   ├── consumer/             ← Kafka listener
+│   │   │   ├── prompt/               ← prompt templates
+│   │   │   ├── repository/
+│   │   │   └── service/
+│   │   └── build.gradle
+│   ├── mfe-shell/                    ← Module Federation host (port 3000, planned)
+│   │   ├── src/
+│   │   ├── webpack.config.js
+│   │   └── package.json
+│   ├── mfe-catalog/                  ← Catalog remote (port 3001, planned)
+│   │   ├── src/
+│   │   ├── webpack.config.js
+│   │   └── package.json
+│   └── mfe-cart/                     ← Cart remote (port 3002, planned)
+│       ├── src/
+│       ├── webpack.config.js
+│       └── package.json
+└── .specs/                           ← Per-phase specs and task checklists
+    ├── 001-product-service/
+    └── 002-api-gateway/
 ```
 
 ---

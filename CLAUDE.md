@@ -6,17 +6,30 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a **phase-gated PoC** of an event-driven e-commerce platform using micro-frontends (MFE). See `docs/DESIGN_DOC.md` for the full 8-phase roadmap and `docs/PRD.md` for product requirements.
 
-**Current status:** Phase 2 complete — Product Service is implemented. Phase 3 (API Gateway) is next.
+**Current status:** Phase 3 complete — API Gateway is implemented. Phase 4 (Catalog MFE) is next.
 
 ## Infrastructure & Development
 
 ### Start infrastructure (required before running any service)
 
 ```bash
-docker compose up -d
+docker compose -f docker-compose.infra.yml up -d
 ```
 
 Starts PostgreSQL 16 (5432), Elasticsearch 8.13 (9200), and Kafka 3.7 with KRaft (9092).
+
+### API Gateway (apps/ecommerce-gateway)
+
+```bash
+# Run with local profile (enables DEBUG logging)
+./gradlew bootRun --args='--spring.profiles.active=local'
+
+# Build
+./gradlew build
+
+# Check health
+curl http://localhost:8080/actuator/health
+```
 
 ### Product Service (apps/product-service)
 
@@ -93,8 +106,10 @@ Elasticsearch
 ## Specifications & Tasks
 
 Each phase has a spec and task file under `.specs/`:
-- `.specs/001-product-service/SPEC.md` — Phase 2 detailed spec with code examples
+- `.specs/001-product-service/SPEC.md` — Phases 1–2 detailed spec with code examples
 - `.specs/001-product-service/TASKS.md` — Actionable checklist with acceptance criteria
+- `.specs/002-api-gateway/SPEC.md` — Phase 3 detailed spec with code examples
+- `.specs/002-api-gateway/TASKS.md` — Actionable checklist with acceptance criteria
 
 ## Available Skills
 

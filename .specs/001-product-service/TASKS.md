@@ -12,15 +12,18 @@ Check off each task as it is completed. Tasks are ordered by implementation sequ
 
 ### 1.1 Docker Compose
 
-- [ ] Create `docker-compose.yml` at the repo root with the following services:
+Two files live at the repo root. Infra is kept separate so it can stay running while individual services are restarted during development.
+
+- [ ] Create `docker-compose.infra.yml` at the repo root with the following services:
   - [ ] `postgres` — `postgres:16-alpine`, port `5432`, volume `postgres_data`, healthcheck via `pg_isready`
   - [ ] `elasticsearch` — `elasticsearch:8.13.0`, port `9200`, single-node, security disabled, 512 MB heap, volume `es_data`, healthcheck via `curl` cluster health
   - [ ] `kafka` — `apache/kafka:3.7.0`, port `9092`, KRaft mode (no Zookeeper), `KAFKA_AUTO_CREATE_TOPICS_ENABLE=true`, healthcheck via `kafka-broker-api-versions.sh`
   - [ ] Declare named volumes: `postgres_data`, `es_data`
+- [ ] Create `docker-compose.services.yml` at the repo root (initially empty services block; populated in Phase 3 when the Gateway and backend services are containerised)
 
 ### 1.2 Acceptance checks (Phase 1)
 
-- [ ] `docker compose up -d` starts all three services without errors
+- [ ] `docker compose -f docker-compose.infra.yml up -d` starts all three infra services without errors
 - [ ] `curl http://localhost:9200` returns Elasticsearch cluster JSON
 - [ ] `psql -h localhost -U ecommerce -d ecommerce -c "\l"` lists the `ecommerce` database
 - [ ] Kafka responds to `kafka-broker-api-versions.sh --bootstrap-server localhost:9092`
@@ -141,7 +144,7 @@ Check off each task as it is completed. Tasks are ordered by implementation sequ
 
 ### 2.12 Acceptance checks (Phase 2)
 
-- [ ] **AC-1** `docker compose up -d` starts Postgres, ES, and Kafka
+- [ ] **AC-1** `docker compose -f docker-compose.infra.yml up -d` starts Postgres, ES, and Kafka
 - [ ] **AC-2** `./gradlew bootRun --args='--spring.profiles.active=local'` from `apps/product-service/` starts on port 8081 without errors
 - [ ] **AC-3** Flyway applies `V1__create_product_table.sql` and the `product.products` table exists on first start
 - [ ] **AC-4** Running with `local` profile inserts 100 products in Postgres and indexes them in ES; subsequent restarts produce no duplicates

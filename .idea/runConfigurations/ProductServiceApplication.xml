@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ProductServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.ecommerce.product.ProductServiceApplication" />
+    <module name="product-service.main" />
+    <option name="ACTIVE_PROFILES" value="local" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

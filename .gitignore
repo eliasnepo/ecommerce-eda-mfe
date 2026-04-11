@@ -43,7 +43,6 @@ target/
 # IDEs and editors
 # ----------------------
 .vscode/
-.idea/
 *.suo
 *.ntvs*
 *.njsproj
@@ -105,4 +104,3 @@ temp/
 *.bak
 *.backup
 *.old
-

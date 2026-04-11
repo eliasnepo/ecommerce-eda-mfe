@@ -43,7 +43,7 @@ A proof-of-concept e-commerce platform validating a modern architecture stack: *
 
 | Service | Port | Tech | Status |
 |---|---|---|---|
-| API Gateway | 8080 | Spring Cloud Gateway (reactive) | Planned (Phase 3) |
+| API Gateway | 8080 | Spring Cloud Gateway (reactive) | **Implemented** |
 | Product Service | 8081 | Spring Boot 3.3, GraphQL, Elasticsearch, PostgreSQL | **Implemented** |
 | Order Service | 8082 | Spring Boot 4.x, Kotlin, Kafka producer, PostgreSQL | Planned (Phase 6) |
 | AI Service | 8083 | Spring Boot 4.x, Spring AI, Kafka consumer | Planned (Phase 7) |
@@ -62,12 +62,24 @@ A proof-of-concept e-commerce platform validating a modern architecture stack: *
 ### 1. Start infrastructure
 
 ```bash
-docker compose up -d
+docker compose -f docker-compose.infra.yml up -d
 ```
 
 Starts PostgreSQL 16 (5432), Elasticsearch 8.13 (9200), and Kafka 3.7 (9092).
 
-### 2. Run the Product Service
+### 2. Run the API Gateway
+
+```bash
+cd apps/ecommerce-gateway
+./gradlew bootRun --args='--spring.profiles.active=local'
+```
+
+**Verify:**
+```bash
+curl http://localhost:8080/actuator/health
+```
+
+### 3. Run the Product Service
 
 ```bash
 cd apps/product-service
@@ -81,7 +93,7 @@ The `local` profile seeds the database with 100 sample products and enables Grap
 curl http://localhost:8081/actuator/health
 ```
 
-GraphiQL is available at `http://localhost:8081/graphiql`.
+GraphiQL is available at `http://localhost:8081/graphiql` (direct) or proxied through the gateway at `http://localhost:8080/graphql`.
 
 ### Sample GraphQL query
 
@@ -133,7 +145,7 @@ Catalog MFE → `GET /api/ai/recommendations/{userId}` → Gateway → AI Servic
 |---|---|---|
 | 1 | Docker Compose infrastructure | Done |
 | 2 | Product Service (GraphQL + ES + PostgreSQL) | **Done** |
-| 3 | API Gateway (routing + CORS) | Next |
+| 3 | API Gateway (routing + CORS) | **Done** |
 | 4 | Catalog MFE (product listing + search) | Planned |
 | 5 | Shell + Cart MFE (Module Federation host) | Planned |
 | 6 | Order Service (REST + Kafka producer) | Planned |
@@ -150,7 +162,7 @@ See [`docs/DESIGN_DOC.md`](docs/DESIGN_DOC.md) for the full architecture specifi
 - [ ] Order placement publishes an event consumed by the AI Service via Kafka
 - [ ] AI Service returns product recommendations based on order history
 - [ ] Shell loads both MFEs lazily without a full page reload
-- [ ] All services start with `docker compose up` and pass `/actuator/health`
+- [ ] All services start with `docker compose -f docker-compose.infra.yml up -d` and pass `/actuator/health`
 
 ## Out of Scope (PoC)
 
