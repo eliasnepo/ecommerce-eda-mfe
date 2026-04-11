@@ -593,8 +593,8 @@ ecommerce-poc/
 5. Create `ProductDocument` and `ProductSearchRepository`.
 6. Implement `ProductIndexingService` that writes to ES on every save.
 7. Implement GraphQL resolvers (`products` query with filter, `product` by ID).
-8. Seed the database with 20–30 sample products.
-9. Verify full-text search works via GraphiQL (`http://localhost:8081/graphiql`).
+8. Seed the database with 80–100 sample products.
+9. Verify full-text search works via GraphQL (`http://localhost:8081/graphql`).
 
 ### Phase 3 — API Gateway (Day 5)
 10. Bootstrap Spring Cloud Gateway.
