@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -17,15 +18,9 @@ public class CorrelationIdFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        String correlationId = exchange.getRequest()
-                .getHeaders()
-                .getFirst(CORRELATION_ID_HEADER);
-
-        if (correlationId == null || correlationId.isBlank()) {
-            correlationId = UUID.randomUUID().toString();
-        }
-
-        String resolvedId = correlationId;
+        final String resolvedId = Optional.ofNullable(exchange.getRequest().getHeaders().getFirst(CORRELATION_ID_HEADER))
+                .filter(id -> !id.isBlank())
+                .orElseGet(() -> UUID.randomUUID().toString());
 
         ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
                 .header(CORRELATION_ID_HEADER, resolvedId)
