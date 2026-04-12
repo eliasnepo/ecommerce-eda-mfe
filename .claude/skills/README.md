@@ -1,6 +1,6 @@
 # Skills
 
-Skills are reusable prompts that teach Claude specific patterns for Java development.
+Skills are reusable prompts that teach Claude specific patterns for this project.
 
 ## Structure Convention
 
@@ -46,6 +46,11 @@ Each skill folder contains:
 | [java-migration](java-migration/) | Java version upgrade guide (8→11→17→21) |
 | [jpa-patterns](jpa-patterns/) | JPA/Hibernate patterns (N+1, lazy loading, transactions) |
 | [logging-patterns](logging-patterns/) | Structured logging (JSON), SLF4J, MDC, AI-friendly formats |
+
+### Frontend
+| Skill | Description |
+|-------|-------------|
+| [frontend-design](frontend-design/) | Production-grade UI with bold, intentional aesthetics (React, HTML/CSS/JS) |
 
 ## Adding a New Skill
 
