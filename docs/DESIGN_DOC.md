@@ -4,7 +4,7 @@
 **Version:** 1.0  
 **Status:** Draft  
 **Author:** —  
-**Last updated:** 2026-04-11
+**Last updated:** 2026-04-12
 
 ---
 
@@ -67,12 +67,13 @@ The system follows a microservices architecture with a micro-frontend layer on t
 |-------|------------|---------------------|
 | Language | TypeScript | 5.x |
 | Framework | React | 18.x |
-| Bundler | Webpack | 5.x |
-| Module Federation | @module-federation/enhanced or built-in WP5 | 5.x |
-| State management | Zustand or Redux Toolkit | — |
-| GraphQL client | Apollo Client | 3.x |
-| HTTP client | Axios | — |
-| Styling | Tailwind CSS | 3.x |
+| Bundler | Vite (Catalog MFE), Webpack 5 (Shell/Cart planned) | 5.x |
+| Module Federation | `@originjs/vite-plugin-federation` (Catalog), WP5 MF host/remote compatibility | 1.x / 5.x |
+| Server state / caching | `@tanstack/react-query` | 5.x |
+| Client state | `@tanstack/store` + `@tanstack/react-store` | 0.x |
+| GraphQL transport | `graphql-request` | 7.x |
+| Routing | `react-router-dom` | 6.x |
+| Styling | Tailwind CSS (mandatory for Catalog MFE Phase 4) | 3.x |
 
 ### 2.3 Infrastructure (local PoC)
 
@@ -325,7 +326,7 @@ The Shell is responsible for:
 - Rendering the top-level layout (header, navigation, footer).
 - Defining the Webpack Module Federation host configuration.
 - Lazy-loading Catalog MFE and Cart MFE on route change.
-- Providing shared singleton dependencies (React, React Router, Axios).
+- Providing shared singleton dependencies (React, React DOM, React Router).
 
 **Webpack config sketch:**
 ```js
@@ -362,13 +363,47 @@ const CartApp    = React.lazy(() => import('cartMfe/App'));
 Exposes: `./App` — the root catalog component.
 
 Responsibilities:
-- Product listing with infinite scroll or pagination.
-- Full-text search input that queries GraphQL.
+- Product listing with pagination and loading skeletons.
+- Full-text search input (debounced at 300 ms) that queries GraphQL.
 - Product detail view.
-- "Add to cart" button (dispatches a cross-MFE event or calls a shared cart store).
+- "Add to cart" action dispatching a cross-MFE browser event.
+
+Implementation profile (Phase 4 canonical choice):
+- Bundler/runtime: Vite 5 + `@originjs/vite-plugin-federation`, exposed entry `remoteEntry.js`.
+- Data/query layer: `graphql-request` + TanStack Query hooks (`useProducts`, `useProduct`).
+- Local UI/filter state: TanStack Store (`@tanstack/store` + `@tanstack/react-store`).
+- Styling: Tailwind CSS with phase-specific tokens from `docs/search_page_design.json`.
+- Routing in remote: relative route paths (`index`, `product/:id`) to keep host mount-path flexibility.
+
+Tailwind requirements (Phase 4):
+- Tailwind utility classes are mandatory for component styling.
+- Theme tokens live in `tailwind.config.ts` and are used via semantic class names (for example `bg-page-bg`, `text-primary-text`, `rounded-card`).
+- Keep global CSS to `src/index.css` (`@tailwind base; @tailwind components; @tailwind utilities;`).
+- Avoid component-level `.css` files and CSS-in-JS for Catalog UI.
+
+Cross-MFE cart event contract (Catalog -> Shell/Cart):
+```ts
+// Event name
+'cart:add-item'
+
+// Event detail
+interface CartAddItemDetail {
+  productId: string
+  productName: string
+  price: number
+  quantity: number
+}
+```
 
 **GraphQL integration:**
-Uses Apollo Client pointed at `http://localhost:8080/graphql` (via the Gateway).
+Catalog calls the API Gateway endpoint at `http://localhost:8080/graphql` (overrideable via `VITE_GRAPHQL_URL`).
+
+Phase 4 implementation gates:
+- `npm run dev` serves Catalog on port `3001` and serves `remoteEntry.js`.
+- Product grid loads from Gateway GraphQL with debounced search and category filter re-query.
+- Product route renders detail at `product/:id` (relative remote route).
+- "Add to cart" dispatches `cart:add-item` with the contract shown above.
+- `npm run test`, `npm run typecheck`, and `npm run build` pass; build output includes federation entry.
 
 ### 4.3 Cart MFE (remote)
 
@@ -384,7 +419,7 @@ Responsibilities:
 - Post-order confirmation screen.
 
 **Cross-MFE communication:**
-For the PoC, use a `window` custom event or a lightweight shared Zustand store exposed via the Shell's shared context. Avoid direct imports between remotes.
+For the PoC, use browser `CustomEvent` messaging on `window` (for example `cart:add-item`) and avoid direct imports between remotes.
 
 ---
 
@@ -393,7 +428,7 @@ For the PoC, use a `window` custom event or a lightweight shared Zustand store e
 ### 5.1 Product search flow
 ```
 User types in Catalog MFE
-  → Apollo Client sends GraphQL query to Gateway (:8080)
+  → TanStack Query executes a `graphql-request` call to Gateway (:8080)
   → Gateway routes to Product Service (:8081)
   → ProductController calls ProductSearchRepository
   → Elasticsearch returns hits
@@ -603,7 +638,9 @@ ecommerce-eda-mfe/
 │   │   └── package.json
 │   ├── mfe-catalog/                  ← Catalog remote (port 3001, planned)
 │   │   ├── src/
-│   │   ├── webpack.config.js
+│   │   ├── vite.config.ts
+│   │   ├── tailwind.config.ts
+│   │   ├── postcss.config.ts
 │   │   └── package.json
 │   └── mfe-cart/                     ← Cart remote (port 3002, planned)
 │       ├── src/
@@ -611,7 +648,8 @@ ecommerce-eda-mfe/
 │       └── package.json
 └── .specs/                           ← Per-phase specs and task checklists
     ├── 001-product-service/
-    └── 002-api-gateway/
+    ├── 002-api-gateway/
+    └── 003-catalog-mfe/
 ```
 
 ---
@@ -637,10 +675,10 @@ ecommerce-eda-mfe/
 12. Add a CORS filter for MFE origins (`localhost:3000`, `3001`, `3002`).
 
 ### Phase 4 — Catalog MFE (Days 6–7)
-13. Bootstrap Webpack 5 app as a Module Federation remote.
-14. Implement product listing page with Apollo Client GraphQL query.
-15. Implement product search input (debounced, calls `products(filter:{query:"..."})` ).
-16. Implement product detail page.
+13. Bootstrap Vite app as a Module Federation remote (`@originjs/vite-plugin-federation`) with deferred bootstrap (`main.tsx` -> `import('./bootstrap')`).
+14. Implement GraphQL query hooks using `graphql-request` + TanStack Query (`products`, `product`) against Gateway `/graphql`.
+15. Implement catalog search/list/filter UI with Tailwind (mandatory), including debounced search and responsive product grid.
+16. Implement product detail page and dispatch `cart:add-item` CustomEvent contract for Shell/Cart interoperability.
 
 ### Phase 5 — Shell + Cart MFE (Days 8–9)
 17. Bootstrap Shell as Module Federation host with lazy routes.

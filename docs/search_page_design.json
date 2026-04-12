@@ -1,0 +1,329 @@
+{
+  "page": {
+    "type": "search_results",
+    "background_color": "#F0F2F5",
+    "layout": "single_column",
+    "sections": ["filter_bar", "stores", "results"]
+  },
+
+  "filter_bar": {
+    "position": "top",
+    "style": {
+      "background": "transparent",
+      "layout": "horizontal_pill_row",
+      "alignment": "center",
+      "gap": "8px"
+    },
+    "filters": [
+      { "label": "Category", "type": "dropdown", "icon": "chevron_down" },
+      { "label": "Rating",   "type": "dropdown", "icon": "chevron_down" },
+      { "label": "Gender",   "type": "dropdown", "icon": "chevron_down" },
+      { "label": "Size",     "type": "dropdown", "icon": "chevron_down" },
+      { "label": "Color",    "type": "dropdown", "icon": "chevron_down" },
+      { "label": "Price",    "type": "dropdown", "icon": "chevron_down" },
+      { "label": "Sort by",  "type": "dropdown", "icon": "chevron_down" }
+    ],
+    "pill_style": {
+      "border_radius": "999px",
+      "border": "1px solid #D1D5DB",
+      "background": "#FFFFFF",
+      "padding": "6px 14px",
+      "font_size": "14px",
+      "font_weight": "400",
+      "color": "#111827"
+    }
+  },
+
+  "sections": {
+    "stores": {
+      "heading": {
+        "text": "Store",
+        "font_size": "20px",
+        "font_weight": "700",
+        "color": "#111827"
+      },
+      "view_all_link": {
+        "text": "View All",
+        "icon": "chevron_right",
+        "color": "#1D4ED8",
+        "font_size": "14px"
+      },
+      "layout": "horizontal_scroll_row",
+      "card_style": {
+        "background": "#FFFFFF",
+        "border_radius": "12px",
+        "padding": "12px 16px",
+        "display": "flex",
+        "align_items": "center",
+        "gap": "12px",
+        "min_width": "220px"
+      },
+      "store_card_anatomy": {
+        "thumbnail": {
+          "shape": "circle",
+          "size": "48px",
+          "background": "#F3F4F6"
+        },
+        "info": {
+          "name": { "font_size": "15px", "font_weight": "600", "color": "#111827" },
+          "rating": {
+            "style": "star_icons",
+            "filled_color": "#F59E0B",
+            "empty_color": "#D1D5DB",
+            "font_size": "13px",
+            "review_count_color": "#6B7280"
+          },
+          "cta": {
+            "text": "Visit shop",
+            "style": "underline_link",
+            "color": "#374151",
+            "font_size": "13px"
+          }
+        }
+      },
+      "stores": [
+        { "name": "Deux par Deux", "rating": 4.5, "review_count": "2.6k" },
+        { "name": "Paisley & Gray", "rating": 4.5, "review_count": "2.6k" },
+        { "name": "Ally Fashion",   "rating": 4.5, "review_count": "2.6k" },
+        { "name": "Nike",           "rating": 4.5, "review_count": "2.6k" }
+      ],
+      "scroll_indicator": {
+        "type": "arrow_button",
+        "direction": "right",
+        "position": "end_of_row"
+      }
+    },
+
+    "results": {
+      "heading": {
+        "text": "Result",
+        "font_size": "20px",
+        "font_weight": "700",
+        "color": "#111827"
+      },
+      "view_all_link": {
+        "text": "View All",
+        "icon": "chevron_right",
+        "color": "#1D4ED8",
+        "font_size": "14px"
+      },
+      "grid": {
+        "columns": 5,
+        "gap": "16px",
+        "responsive_breakpoints": {
+          "xl": 5,
+          "lg": 4,
+          "md": 3,
+          "sm": 2,
+          "xs": 1
+        }
+      },
+      "product_card": {
+        "background": "#FFFFFF",
+        "border_radius": "12px",
+        "overflow": "hidden",
+        "padding_bottom": "12px",
+        "shadow": "none",
+        "anatomy": {
+          "image": {
+            "aspect_ratio": "1 / 1",
+            "object_fit": "cover",
+            "background": "#F3F4F6",
+            "position": "top"
+          },
+          "wishlist_button": {
+            "position": "absolute",
+            "top": "10px",
+            "right": "10px",
+            "icon": "heart_outline",
+            "background": "rgba(255,255,255,0.75)",
+            "shape": "circle",
+            "size": "30px",
+            "color": "#9CA3AF"
+          },
+          "product_info": {
+            "padding": "10px 10px 0",
+            "name": {
+              "font_size": "13px",
+              "font_weight": "500",
+              "color": "#111827",
+              "line_clamp": 2,
+              "margin_bottom": "4px"
+            },
+            "rating": {
+              "style": "star_icons",
+              "filled_color": "#F59E0B",
+              "half_star": true,
+              "empty_color": "#D1D5DB",
+              "font_size": "12px",
+              "review_count": {
+                "format": "(N)",
+                "color": "#6B7280",
+                "font_size": "12px"
+              },
+              "margin_bottom": "4px"
+            },
+            "price": {
+              "font_size": "15px",
+              "font_weight": "700",
+              "color": "#111827",
+              "currency": "AED",
+              "currency_position": "suffix",
+              "currency_style": {
+                "font_size": "12px",
+                "font_weight": "400",
+                "vertical_align": "super"
+              }
+            }
+          }
+        }
+      },
+      "products": [
+        {
+          "id": 1,
+          "name": "Color-blocked Puffer Jacket Multicolor",
+          "rating": 4.5,
+          "review_count": 100,
+          "price": 300.00,
+          "currency": "AED",
+          "row": 1
+        },
+        {
+          "id": 2,
+          "name": "Unisex Printed Quilted Puffer Jacket",
+          "rating": 3.5,
+          "review_count": 1200,
+          "price": 200.00,
+          "currency": "AED",
+          "row": 1
+        },
+        {
+          "id": 3,
+          "name": "Off Road Ventures Women's Lightweight…",
+          "rating": 3.0,
+          "review_count": 39,
+          "price": 734.60,
+          "currency": "AED",
+          "row": 1
+        },
+        {
+          "id": 4,
+          "name": "Rowing Blazers Bright Multicolor Colorblock…",
+          "rating": 4.5,
+          "review_count": 88,
+          "price": 1469.20,
+          "currency": "AED",
+          "row": 1
+        },
+        {
+          "id": 5,
+          "name": "U.S. Polo Assn. Women's Crop Color-Blocked Puffer…",
+          "rating": 3.5,
+          "review_count": 24,
+          "price": 326.90,
+          "currency": "AED",
+          "row": 1
+        },
+        {
+          "id": 6,
+          "name": "Pucci, Iride down jacket, Women, Multicolor, US 6…",
+          "rating": 4.0,
+          "review_count": 120,
+          "price": 609.36,
+          "currency": "AED",
+          "row": 2
+        },
+        {
+          "id": 7,
+          "name": "Only Padded Coat in Pink & Red Color block-Multi",
+          "rating": 2.5,
+          "review_count": 16,
+          "price": 209.36,
+          "currency": "AED",
+          "row": 2
+        },
+        {
+          "id": 8,
+          "name": "Off Road Ventures Women's Lightweight…",
+          "rating": 4.5,
+          "review_count": 1100,
+          "price": 624.41,
+          "currency": "AED",
+          "row": 2
+        },
+        {
+          "id": 9,
+          "name": "Rowing Blazers Bright Multicolor Colorblock…",
+          "rating": 2.0,
+          "review_count": 64,
+          "price": 455.45,
+          "currency": "AED",
+          "row": 2
+        },
+        {
+          "id": 10,
+          "name": "U.S. Polo Assn. Women's Crop Color-Blocked Puffer…",
+          "rating": 3.5,
+          "review_count": 200,
+          "price": 253.44,
+          "currency": "AED",
+          "row": 2
+        }
+      ]
+    }
+  },
+
+  "design_tokens": {
+    "colors": {
+      "primary_text": "#111827",
+      "secondary_text": "#6B7280",
+      "link": "#1D4ED8",
+      "star_filled": "#F59E0B",
+      "star_empty": "#D1D5DB",
+      "card_background": "#FFFFFF",
+      "page_background": "#F0F2F5",
+      "border": "#D1D5DB",
+      "wishlist_icon": "#9CA3AF"
+    },
+    "typography": {
+      "section_heading": { "size": "20px", "weight": "700" },
+      "filter_label": { "size": "14px", "weight": "400" },
+      "store_name": { "size": "15px", "weight": "600" },
+      "product_name": { "size": "13px", "weight": "500" },
+      "product_price": { "size": "15px", "weight": "700" },
+      "review_count": { "size": "12px", "weight": "400" },
+      "cta_link": { "size": "13px", "weight": "400" }
+    },
+    "spacing": {
+      "section_gap": "24px",
+      "card_gap": "16px",
+      "card_padding": "10px",
+      "filter_pill_padding": "6px 14px"
+    },
+    "border_radius": {
+      "card": "12px",
+      "pill": "999px",
+      "thumbnail": "50%"
+    }
+  },
+
+  "interaction_patterns": {
+    "wishlist_toggle": {
+      "trigger": "click",
+      "target": "heart_icon",
+      "states": ["outline (default)", "filled_red (saved)"]
+    },
+    "filter_dropdown": {
+      "trigger": "click",
+      "behavior": "overlay_menu"
+    },
+    "store_scroll": {
+      "trigger": "click_arrow or swipe",
+      "behavior": "horizontal_scroll"
+    },
+    "view_all": {
+      "trigger": "click",
+      "behavior": "navigate_to_full_list"
+    }
+  }
+}
