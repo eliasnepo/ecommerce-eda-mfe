@@ -1,0 +1,390 @@
+{
+  "page": {
+    "type": "cart_checkout",
+    "background_color": "#F0F2F5",
+    "layout": "responsive_split",
+    "sections": [
+      "header",
+      "cart_items",
+      "order_summary",
+      "empty_state",
+      "confirmation"
+    ]
+  },
+  "header": {
+    "title": {
+      "text": "Your Cart",
+      "font_size": "24px",
+      "font_weight": "700",
+      "color": "#111827"
+    },
+    "subtitle": {
+      "text_template": "{itemCount} items",
+      "font_size": "14px",
+      "font_weight": "400",
+      "color": "#6B7280"
+    },
+    "actions": [
+      {
+        "label": "Continue shopping",
+        "style": "text_link",
+        "color": "#1D4ED8",
+        "target": "/catalog"
+      }
+    ]
+  },
+  "layout": {
+    "desktop": {
+      "min_width": "1024px",
+      "columns": "2fr 1fr",
+      "gap": "24px",
+      "align": "start"
+    },
+    "tablet": {
+      "min_width": "768px",
+      "columns": "1fr",
+      "gap": "20px"
+    },
+    "mobile": {
+      "max_width": "767px",
+      "columns": "1fr",
+      "gap": "16px"
+    }
+  },
+  "sections": {
+    "cart_items": {
+      "heading": {
+        "text": "Items",
+        "font_size": "20px",
+        "font_weight": "700",
+        "color": "#111827"
+      },
+      "list_style": {
+        "display": "vertical_stack",
+        "gap": "12px"
+      },
+      "item_card": {
+        "background": "#FFFFFF",
+        "border": "1px solid #D1D5DB",
+        "border_radius": "12px",
+        "padding": "12px",
+        "layout": "image_info_controls",
+        "columns": "96px 1fr auto",
+        "mobile_columns": "72px 1fr",
+        "mobile_controls_row": true,
+        "anatomy": {
+          "image": {
+            "size": "96px",
+            "mobile_size": "72px",
+            "background": "#F3F4F6",
+            "border_radius": "10px",
+            "object_fit": "cover"
+          },
+          "info": {
+            "name": {
+              "font_size": "15px",
+              "font_weight": "600",
+              "color": "#111827",
+              "line_clamp": 2
+            },
+            "meta": {
+              "font_size": "13px",
+              "font_weight": "400",
+              "color": "#6B7280"
+            },
+            "unit_price": {
+              "font_size": "14px",
+              "font_weight": "500",
+              "color": "#374151",
+              "currency": "USD",
+              "format": "$0.00"
+            }
+          },
+          "controls": {
+            "quantity_stepper": {
+              "style": "segmented",
+              "height": "34px",
+              "padding": "0 8px",
+              "border": "1px solid #D1D5DB",
+              "border_radius": "999px",
+              "button_size": "26px",
+              "button_color": "#111827",
+              "background": "#FFFFFF"
+            },
+            "line_total": {
+              "font_size": "15px",
+              "font_weight": "700",
+              "color": "#111827",
+              "currency": "USD",
+              "format": "$0.00"
+            },
+            "remove_action": {
+              "label": "Remove",
+              "style": "text_link",
+              "font_size": "13px",
+              "font_weight": "500",
+              "color": "#DC2626"
+            }
+          }
+        }
+      }
+    },
+    "order_summary": {
+      "heading": {
+        "text": "Order summary",
+        "font_size": "20px",
+        "font_weight": "700",
+        "color": "#111827"
+      },
+      "card": {
+        "background": "#FFFFFF",
+        "border": "1px solid #D1D5DB",
+        "border_radius": "12px",
+        "padding": "16px",
+        "rows": [
+          {
+            "label": "Subtotal",
+            "value_format": "$0.00",
+            "font_size": "14px",
+            "color": "#374151"
+          },
+          {
+            "label": "Shipping",
+            "value_format": "Free",
+            "font_size": "14px",
+            "color": "#374151"
+          },
+          {
+            "label": "Tax",
+            "value_format": "$0.00",
+            "font_size": "14px",
+            "color": "#374151"
+          },
+          {
+            "label": "Total",
+            "value_format": "$0.00",
+            "font_size": "18px",
+            "font_weight": "700",
+            "color": "#111827"
+          }
+        ],
+        "primary_cta": {
+          "label": "Place order",
+          "height": "44px",
+          "border_radius": "10px",
+          "background": "#1D4ED8",
+          "text_color": "#FFFFFF",
+          "font_size": "15px",
+          "font_weight": "600",
+          "states": {
+            "hover": {
+              "background": "#1E40AF"
+            },
+            "disabled": {
+              "background": "#93C5FD",
+              "text_color": "#E5E7EB"
+            },
+            "loading": {
+              "label": "Placing order..."
+            }
+          }
+        }
+      }
+    },
+    "empty_state": {
+      "container": {
+        "background": "#FFFFFF",
+        "border": "1px dashed #D1D5DB",
+        "border_radius": "12px",
+        "padding": "36px 20px",
+        "text_align": "center"
+      },
+      "icon": {
+        "name": "shopping_bag_outline",
+        "size": "42px",
+        "color": "#9CA3AF"
+      },
+      "title": {
+        "text": "Your cart is empty",
+        "font_size": "20px",
+        "font_weight": "700",
+        "color": "#111827"
+      },
+      "description": {
+        "text": "Add products from the catalog to see them here.",
+        "font_size": "14px",
+        "font_weight": "400",
+        "color": "#6B7280"
+      },
+      "cta": {
+        "label": "Browse catalog",
+        "style": "primary_button",
+        "background": "#1D4ED8",
+        "text_color": "#FFFFFF",
+        "border_radius": "10px",
+        "target": "/catalog"
+      }
+    },
+    "confirmation": {
+      "container": {
+        "background": "#FFFFFF",
+        "border": "1px solid #D1D5DB",
+        "border_radius": "12px",
+        "padding": "28px",
+        "text_align": "center"
+      },
+      "success_icon": {
+        "name": "check_circle",
+        "size": "44px",
+        "color": "#16A34A"
+      },
+      "title": {
+        "text": "Order placed successfully",
+        "font_size": "22px",
+        "font_weight": "700",
+        "color": "#111827"
+      },
+      "order_id": {
+        "prefix": "Order ID:",
+        "font_size": "14px",
+        "font_weight": "500",
+        "color": "#374151"
+      },
+      "description": {
+        "text": "We received your order and will process it shortly.",
+        "font_size": "14px",
+        "font_weight": "400",
+        "color": "#6B7280"
+      },
+      "actions": [
+        {
+          "label": "Continue shopping",
+          "style": "primary_button",
+          "background": "#1D4ED8",
+          "text_color": "#FFFFFF",
+          "target": "/catalog"
+        },
+        {
+          "label": "View cart",
+          "style": "secondary_button",
+          "background": "#FFFFFF",
+          "border": "1px solid #D1D5DB",
+          "text_color": "#111827",
+          "target": "/cart"
+        }
+      ]
+    }
+  },
+  "sample_data": {
+    "currency": "USD",
+    "items": [
+      {
+        "id": "prod-1",
+        "name": "Wireless Noise-Cancelling Headphones",
+        "unit_price": 129.99,
+        "quantity": 1,
+        "line_total": 129.99
+      },
+      {
+        "id": "prod-2",
+        "name": "Mechanical Keyboard - Compact 75%",
+        "unit_price": 89.5,
+        "quantity": 2,
+        "line_total": 179.0
+      }
+    ],
+    "summary": {
+      "subtotal": 308.99,
+      "shipping": 0.0,
+      "tax": 0.0,
+      "total": 308.99
+    }
+  },
+  "design_tokens": {
+    "colors": {
+      "primary_text": "#111827",
+      "secondary_text": "#6B7280",
+      "link": "#1D4ED8",
+      "danger": "#DC2626",
+      "success": "#16A34A",
+      "card_background": "#FFFFFF",
+      "page_background": "#F0F2F5",
+      "border": "#D1D5DB",
+      "muted_background": "#F3F4F6"
+    },
+    "typography": {
+      "page_heading": {
+        "size": "24px",
+        "weight": "700"
+      },
+      "section_heading": {
+        "size": "20px",
+        "weight": "700"
+      },
+      "item_name": {
+        "size": "15px",
+        "weight": "600"
+      },
+      "body": {
+        "size": "14px",
+        "weight": "400"
+      },
+      "summary_total": {
+        "size": "18px",
+        "weight": "700"
+      }
+    },
+    "spacing": {
+      "page_padding": "24px",
+      "section_gap": "24px",
+      "card_padding": "16px",
+      "row_gap": "12px"
+    },
+    "border_radius": {
+      "card": "12px",
+      "button": "10px",
+      "pill": "999px"
+    },
+    "shadows": {
+      "card": "0 1px 2px rgba(17, 24, 39, 0.06)",
+      "floating": "0 8px 24px rgba(17, 24, 39, 0.12)"
+    }
+  },
+  "interaction_patterns": {
+    "quantity_stepper": {
+      "trigger": "click or keyboard",
+      "behavior": "increment_or_decrement_quantity",
+      "guards": [
+        "quantity_never_negative",
+        "decrement_at_one_can_remove"
+      ]
+    },
+    "remove_item": {
+      "trigger": "click_remove",
+      "behavior": "remove_row_and_recalculate_totals"
+    },
+    "checkout": {
+      "trigger": "click_place_order",
+      "behavior": "submit_then_show_confirmation",
+      "states": [
+        "idle",
+        "loading",
+        "success",
+        "error"
+      ]
+    },
+    "cart_sync": {
+      "transport": "window_custom_events",
+      "writer": "shell_host",
+      "reader": "cart_remote_and_shell_badge",
+      "events": [
+        "cart:add-item",
+        "cart:update-item",
+        "cart:remove-item",
+        "cart:clear",
+        "cart:request-state",
+        "cart:state-changed"
+      ]
+    }
+  }
+}
