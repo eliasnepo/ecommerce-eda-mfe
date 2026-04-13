@@ -1,0 +1,125 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  color: var(--color-primary-text);
+  background: var(--color-page-bg);
+}
+
+.shell-page {
+  min-height: 100vh;
+}
+
+.shell-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(6px);
+}
+
+.shell-header-inner {
+  margin: 0 auto;
+  display: flex;
+  max-width: 1200px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+}
+
+.shell-brand {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.shell-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.shell-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  padding: 8px 12px;
+  color: var(--color-primary-text);
+  text-decoration: none;
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.shell-nav-link:hover {
+  border-color: var(--color-border);
+  background: var(--color-card-bg);
+}
+
+.shell-nav-link:focus-visible {
+  outline: 2px solid var(--color-link);
+  outline-offset: 2px;
+}
+
+.shell-nav-link.is-active {
+  border-color: var(--color-link);
+  color: var(--color-link);
+  background: #eff6ff;
+}
+
+.cart-badge {
+  min-width: 22px;
+  border-radius: var(--radius-pill);
+  background: var(--color-badge-bg);
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-badge-text);
+  text-align: center;
+}
+
+.shell-main {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 20px 16px 28px;
+}
+
+.remote-fallback,
+.remote-error,
+.shell-not-found {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-card-bg);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+}
+
+.remote-error {
+  color: var(--color-danger);
+}
+
+.shell-not-found h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.shell-not-found p {
+  margin-bottom: 0;
+  color: var(--color-secondary-text);
+}
+
+@media (max-width: 680px) {
+  .shell-header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .shell-nav {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}
