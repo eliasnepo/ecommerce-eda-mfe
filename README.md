@@ -2,6 +2,16 @@
 
 A proof-of-concept e-commerce platform validating a modern architecture stack: **event-driven microservices** with **Kafka**, **GraphQL**, **Elasticsearch**, **Spring AI**, and **Webpack Module Federation** micro-frontends.
 
+## Implemented So Far
+
+- Infrastructure stack is up and reproducible with Docker Compose (PostgreSQL, Elasticsearch, Kafka/KRaft).
+- Product Service is live with GraphQL product listing/detail, Elasticsearch-backed search, and PostgreSQL hydration.
+- API Gateway routes GraphQL and backend APIs with local MFE-friendly CORS settings.
+- Catalog MFE is implemented with product listing, search, category filtering, price sorting, pagination, and product detail page.
+- Catalog quality improvements include USD price formatting, consistent card/image sizing, long-name truncation with hover full name, and Store section removal.
+- Product search now supports typo-tolerant fuzzy matching and explicit sort modes (`RELEVANCE`, `PRICE_ASC`, `PRICE_DESC`).
+- Local product seeding now prefers curated real external images with deterministic selection and placeholder fallback.
+
 ## Architecture
 
 ```
@@ -48,7 +58,7 @@ A proof-of-concept e-commerce platform validating a modern architecture stack: *
 | Order Service | 8082 | Spring Boot 4.x, Kotlin, Kafka producer, PostgreSQL | Planned (Phase 6) |
 | AI Service | 8083 | Spring Boot 4.x, Spring AI, Kafka consumer | Planned (Phase 7) |
 | Shell MFE | 3000 | React 18, Webpack 5 Module Federation host | Planned (Phase 5) |
-| Catalog MFE | 3001 | React 18, Apollo Client, Module Federation remote | Planned (Phase 4) |
+| Catalog MFE | 3001 | React 18, TypeScript 5, GraphQL Request, Vite Module Federation remote | **Implemented** |
 | Cart MFE | 3002 | React 18, Axios, Module Federation remote | Planned (Phase 5) |
 
 ## Getting Started
@@ -58,6 +68,7 @@ A proof-of-concept e-commerce platform validating a modern architecture stack: *
 - Docker + Docker Compose
 - Java 21
 - Gradle 8.x (or use the included wrapper)
+- Node.js 20+
 
 ### 1. Start infrastructure
 
@@ -95,11 +106,21 @@ curl http://localhost:8081/actuator/health
 
 GraphiQL is available at `http://localhost:8081/graphiql` (direct) or proxied through the gateway at `http://localhost:8080/graphql`.
 
+### 4. Run the Catalog MFE
+
+```bash
+cd apps/mfe-catalog
+npm install
+npm run dev
+```
+
+Catalog MFE runs at `http://localhost:3001`.
+
 ### Sample GraphQL query
 
 ```graphql
 query {
-  products(filter: { query: "shoes", category: "footwear", maxPrice: 150 }, page: 0, size: 10) {
+  products(filter: { query: "wirels", category: "Electronics", maxPrice: 150, sortBy: PRICE_ASC }, page: 0, size: 10) {
     content {
       id
       name
@@ -136,7 +157,7 @@ Catalog MFE → `GET /api/ai/recommendations/{userId}` → Gateway → AI Servic
 | Database | PostgreSQL 16 + Flyway migrations |
 | API Gateway | Spring Cloud Gateway |
 | Frontend | React 18, TypeScript 5, Webpack 5 Module Federation |
-| GraphQL client | Apollo Client 3.x |
+| GraphQL client | GraphQL Request |
 | Styling | Tailwind CSS 3.x |
 
 ## Implementation Phases
@@ -146,7 +167,7 @@ Catalog MFE → `GET /api/ai/recommendations/{userId}` → Gateway → AI Servic
 | 1 | Docker Compose infrastructure | Done |
 | 2 | Product Service (GraphQL + ES + PostgreSQL) | **Done** |
 | 3 | API Gateway (routing + CORS) | **Done** |
-| 4 | Catalog MFE (product listing + search) | Planned |
+| 4 | Catalog MFE (product listing + search) | **Done** |
 | 5 | Shell + Cart MFE (Module Federation host) | Planned |
 | 6 | Order Service (REST + Kafka producer) | Planned |
 | 7 | AI Service (Kafka consumer + Spring AI) | Planned |
@@ -156,13 +177,13 @@ See [`docs/DESIGN_DOC.md`](docs/DESIGN_DOC.md) for the full architecture specifi
 
 ## PoC Acceptance Criteria
 
-- [ ] Search for a product by keyword → results from Elasticsearch
-- [ ] View product details via GraphQL query
+- [x] Search for a product by keyword → results from Elasticsearch
+- [x] View product details via GraphQL query
 - [ ] Add to cart and place an order
 - [ ] Order placement publishes an event consumed by the AI Service via Kafka
 - [ ] AI Service returns product recommendations based on order history
 - [ ] Shell loads both MFEs lazily without a full page reload
-- [ ] All services start with `docker compose -f docker-compose.infra.yml up -d` and pass `/actuator/health`
+- [ ] All services start with `docker compose -f docker-compose.infra.yml up -d && docker compose -f docker-compose.services.yml up -d` and pass `/actuator/health`
 
 ## Out of Scope (PoC)
 
