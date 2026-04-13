@@ -27,6 +27,36 @@ describe('ProductCard', () => {
     expect(screen.getByText('$99.99')).toBeInTheDocument()
   })
 
+  it('truncates long names and exposes full name on hover title', () => {
+    const longName =
+      'Wireless Noise Cancelling Over-Ear Headphones with Extra Long Marketing Name'
+
+    render(<ProductCard product={{ ...product, name: longName }} />)
+
+    const nameElement = screen.getByTitle(longName)
+    expect(nameElement).toHaveClass('truncate')
+    expect(nameElement).toHaveTextContent(longName)
+  })
+
+  it('renders product image in fixed-size cropped container', () => {
+    render(
+      <ProductCard
+        product={{
+          ...product,
+          imageUrl: 'https://images.unsplash.com/photo-1512820790803-83ca734da794',
+        }}
+      />,
+    )
+
+    const image = screen.getByRole('img', { name: 'Wireless Headphones' })
+    expect(image).toHaveClass('block')
+    expect(image).toHaveClass('h-full')
+    expect(image).toHaveClass('w-full')
+    expect(image).toHaveClass('object-cover')
+    expect(image.parentElement).toHaveClass('h-48')
+    expect(image.parentElement).toHaveClass('overflow-hidden')
+  })
+
   it('dispatches cart:add-item event with expected detail', async () => {
     const user = userEvent.setup()
     const handler = vi.fn()

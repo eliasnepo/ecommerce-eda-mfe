@@ -43,7 +43,7 @@ export default function ProductGrid({
               <ProductCardSkeleton key={index} />
             ))
           : products.map((product) => (
-              <Link key={product.id} to={`product/${product.id}`}>
+              <Link key={product.id} to={`product/${product.id}`} className="block h-full">
                 <ProductCard product={product} />
               </Link>
             ))}

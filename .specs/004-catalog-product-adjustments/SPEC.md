@@ -17,6 +17,8 @@ Apply targeted improvements across `apps/mfe-catalog` and `apps/product-service`
 2. Prices are displayed in USD in the Catalog UI.
 3. Seeded products use real internet images, with the current placeholder URL kept as fallback.
 4. Product search supports fuzzy matching for typo tolerance (example: `wirels` should match `wireless`).
+5. Catalog product cards keep consistent visual height regardless of product name length.
+6. The unused Store section is removed from the Catalog page.
 
 ### Scope
 
@@ -24,6 +26,8 @@ Apply targeted improvements across `apps/mfe-catalog` and `apps/product-service`
 - Product Service GraphQL contract and search query behavior.
 - Product Service local data seeding image URL strategy.
 - Catalog MFE GraphQL query variables and price display formatting.
+- Catalog MFE card title truncation + full-name hover behavior.
+- Catalog MFE removal of unused Store row UI.
 - Unit and integration tests affected by these changes.
 
 **Out of scope**
@@ -40,7 +44,9 @@ Apply targeted improvements across `apps/mfe-catalog` and `apps/product-service`
 - `apps/product-service/src/test/java/com/ecommerce/product/**`
 - `apps/mfe-catalog/src/api/queries/products.gql.ts`
 - `apps/mfe-catalog/src/hooks/useProducts.ts`
+- `apps/mfe-catalog/src/components/CatalogPage.tsx`
 - `apps/mfe-catalog/src/components/ProductGrid/ProductCard.tsx`
+- `apps/mfe-catalog/src/components/ProductGrid/ProductGrid.tsx`
 - `apps/mfe-catalog/src/components/ProductDetail/ProductDetailPage.tsx`
 - `apps/mfe-catalog/src/__tests__/**`
 
@@ -162,7 +168,32 @@ Search currently uses strict `multi_match` behavior and misses typo-like inputs.
 
 ---
 
-## 5) Testing requirements
+## 5) Catalog card consistency and Store section removal (MFE)
+
+### Problem
+
+- Long product names can increase card height and produce uneven rows.
+- The Store section is currently mock-only and not part of this software scope.
+
+### Required behavior
+
+- Product cards must keep uniform height in product grids.
+- Product card image areas must keep uniform size across cards.
+- Product images should use cover-cropping to fit the fixed image frame.
+- Product names in cards must use ellipsis truncation when they exceed available width.
+- Full product name must remain available on hover.
+- Store section must be removed from Catalog page.
+
+### Implementation notes
+
+- Make card layout stretchable and equal-height within the grid row.
+- Use a fixed media container height in cards and `object-cover` image behavior.
+- Keep product name as single-line truncation (`...`) and expose full name via hover title.
+- Remove StoreRow composition from `CatalogPage` and clean dead code/tests.
+
+---
+
+## 6) Testing requirements
 
 ### Product Service
 
@@ -178,10 +209,12 @@ Search currently uses strict `multi_match` behavior and misses typo-like inputs.
 - Update hook/component tests to confirm:
   - `sortBy` is sent in GraphQL variables.
   - USD formatting is rendered in card and detail views.
+  - Long names are truncated and full names are available on hover.
+  - Store section is no longer rendered on Catalog page.
 
 ---
 
-## 6) Backward compatibility
+## 7) Backward compatibility
 
 - Existing clients that do not pass `sortBy` continue to work (default relevance).
 - API response shape remains unchanged.
@@ -189,7 +222,7 @@ Search currently uses strict `multi_match` behavior and misses typo-like inputs.
 
 ---
 
-## 7) Acceptance criteria
+## 8) Acceptance criteria
 
 1. Selecting sort by price in Catalog changes result order correctly (asc/desc).
 2. Catalog displays prices in USD (no AED labels remain in product card/detail views).
@@ -197,3 +230,6 @@ Search currently uses strict `multi_match` behavior and misses typo-like inputs.
 4. Local seeded products use real external image URLs when available.
 5. Placeholder URL pattern remains available as fallback for unmapped images.
 6. `apps/product-service` and `apps/mfe-catalog` tests pass after updates.
+7. Catalog product cards maintain consistent size for mixed name lengths.
+8. Store section is absent from Catalog UI.
+9. Catalog product card images keep identical frame size and are cropped to fit.

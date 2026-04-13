@@ -23,11 +23,3 @@ export interface ProductFilter {
 }
 
 export type ProductSortBy = 'relevance' | 'price_asc' | 'price_desc'
-
-export interface Store {
-  id: string
-  name: string
-  rating: number
-  reviewCount: string
-  thumbnailUrl?: string
-}

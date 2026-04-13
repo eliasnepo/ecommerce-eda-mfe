@@ -80,3 +80,20 @@ Check off each task as it is completed. Tasks are ordered by implementation sequ
 - [ ] **AC-6** Local seeded products use real external image URLs when available and fallback placeholder URLs otherwise
 - [ ] **AC-7** `./gradlew test` passes in `apps/product-service`
 - [ ] **AC-8** `npm run test` and `npm run typecheck` pass in `apps/mfe-catalog`
+
+## 4.9 Catalog MFE - Card consistency and Store section removal
+
+- [ ] Update `apps/mfe-catalog/src/components/ProductGrid/ProductCard.tsx`:
+  - [ ] Keep cards at consistent height regardless of name length
+  - [ ] Keep image container at consistent fixed size and crop image to fit
+  - [ ] Truncate long names with ellipsis
+  - [ ] Expose full product name on hover
+- [ ] Update `apps/mfe-catalog/src/components/ProductGrid/ProductGrid.tsx` to ensure card containers stretch consistently inside the grid
+- [ ] Remove Store section from `apps/mfe-catalog/src/components/CatalogPage.tsx`
+- [ ] Remove obsolete StoreRow artifacts if unused (`components/StoreRow/*`, related tests/types)
+- [ ] Update tests:
+  - [ ] `apps/mfe-catalog/src/__tests__/components/ProductCard.test.tsx` for truncate + hover-full-name behavior
+  - [ ] `apps/mfe-catalog/src/__tests__/integration/catalog.integration.test.tsx` to stop expecting Store section
+- [ ] **AC-9** Catalog cards stay visually uniform with long/short product names
+- [ ] **AC-10** Store section is not rendered in Catalog UI
+- [ ] **AC-11** Product-card image frames remain equal size and crop oversized images

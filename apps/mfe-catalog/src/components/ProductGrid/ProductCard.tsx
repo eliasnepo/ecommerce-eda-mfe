@@ -27,14 +27,14 @@ export default function ProductCard({ product }: Props) {
   return (
     <article
       aria-label={product.name}
-      className="relative overflow-hidden rounded-card bg-card-bg pb-3"
+      className="relative flex h-full flex-col overflow-hidden rounded-card bg-card-bg pb-3"
     >
-      <div className="relative aspect-square bg-gray-100">
+      <div className="relative h-48 overflow-hidden bg-gray-100">
         {product.imageUrl ? (
           <img
             src={product.imageUrl}
             alt={product.name}
-            className="h-full w-full object-cover"
+            className="block h-full w-full object-cover"
             loading="lazy"
           />
         ) : (
@@ -43,8 +43,11 @@ export default function ProductCard({ product }: Props) {
         <WishlistButton productId={product.id} />
       </div>
 
-      <div className="px-2.5 pt-2.5">
-        <p className="mb-1 line-clamp-2 text-[13px] font-medium text-primary-text">
+      <div className="flex flex-1 flex-col px-2.5 pt-2.5">
+        <p
+          title={product.name}
+          className="mb-1 truncate text-[13px] font-medium text-primary-text"
+        >
           {product.name}
         </p>
         <StarRating rating={4} reviewCount="-" />
@@ -53,7 +56,7 @@ export default function ProductCard({ product }: Props) {
         </p>
         <button
           onClick={handleAddToCart}
-          className="mt-2 w-full rounded-pill border border-border py-1 text-xs text-primary-text hover:bg-gray-50"
+          className="mt-auto w-full rounded-pill border border-border py-1 text-xs text-primary-text hover:bg-gray-50"
         >
           Add to cart
         </button>

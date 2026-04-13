@@ -61,7 +61,6 @@ describe('Catalog + Gateway integration', () => {
       expect(
         screen.getByRole('searchbox', { name: 'Search products' }),
       ).toBeInTheDocument()
-      expect(screen.getByRole('heading', { name: 'Store' })).toBeInTheDocument()
       expect(screen.getByRole('heading', { name: 'Result' })).toBeInTheDocument()
 
       await waitFor(() => {
