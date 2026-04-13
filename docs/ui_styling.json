@@ -1,0 +1,323 @@
+{
+  "meta": {
+    "spec_id": "006",
+    "name": "ui_refactor_shopcart_style",
+    "source": "Image 1",
+    "last_updated": "2026-04-13"
+  },
+  "visual_direction": {
+    "theme": "clean_grocery_tech",
+    "keywords": [
+      "friendly",
+      "airy",
+      "practical",
+      "conversion_focused"
+    ],
+    "notes": "Keep a light, neutral canvas with deep green as the primary accent. Components should feel simple and rounded with clear hierarchy and generous spacing."
+  },
+  "page_layout": {
+    "catalog_search": {
+      "type": "search_results",
+      "background_color": "#F3F3F3",
+      "max_width": "1320px",
+      "horizontal_padding": "24px",
+      "vertical_structure": [
+        "banner",
+        "filters",
+        "products"
+      ]
+    },
+    "shell": {
+      "header_position": "sticky_top",
+      "header_height": "72px",
+      "header_background": "#FFFFFF",
+      "header_border": "1px solid #E6E6E6"
+    }
+  },
+  "header": {
+    "brand": {
+      "label": "Shopcart",
+      "icon": "cart_leaf",
+      "color": "#0C513F"
+    },
+    "menu_items": [
+      {
+        "label": "Categories",
+        "type": "dropdown"
+      },
+      {
+        "label": "Deals",
+        "type": "link"
+      },
+      {
+        "label": "What's New",
+        "type": "link"
+      },
+      {
+        "label": "Delivery",
+        "type": "link"
+      }
+    ],
+    "search": {
+      "placement": "shell_menu_bar",
+      "placeholder": "Search Product",
+      "shape": "pill",
+      "height": "44px",
+      "background": "#F5F5F5",
+      "icon": "search"
+    },
+    "actions": [
+      {
+        "label": "Account",
+        "icon": "user"
+      },
+      {
+        "label": "Cart",
+        "icon": "shopping_cart"
+      }
+    ],
+    "cart_hover_modal": {
+      "trigger": "hover_or_focus",
+      "placement": "bottom_right_of_cart_icon",
+      "width": "360px",
+      "style": {
+        "background": "#FFFFFF",
+        "border": "1px solid #E5E7EB",
+        "border_radius": "16px",
+        "shadow": "0 20px 44px rgba(17, 24, 39, 0.18)",
+        "padding": "16px"
+      },
+      "sections": [
+        "header_with_item_count",
+        "latest_items",
+        "subtotal",
+        "actions"
+      ],
+      "actions": [
+        {
+          "label": "View Cart",
+          "style": "secondary"
+        },
+        {
+          "label": "Checkout",
+          "style": "primary"
+        }
+      ]
+    }
+  },
+  "sections": {
+    "banner": {
+      "container": {
+        "background": "#EFE6DB",
+        "border_radius": "0px",
+        "min_height": "300px",
+        "display": "split_content"
+      },
+      "content": {
+        "headline": "Grab Upto 50% Off On Selected Headphone",
+        "headline_font": {
+          "size": "64px",
+          "weight": "700",
+          "line_height": "1.1"
+        },
+        "cta": {
+          "label": "Buy Now",
+          "shape": "pill",
+          "background": "#00553A",
+          "text_color": "#FFFFFF"
+        }
+      },
+      "media": {
+        "position": "right",
+        "fit": "contain"
+      }
+    },
+    "filters": {
+      "layout": "single_row_wrap",
+      "container_background": "transparent",
+      "left_controls": [
+        "Headphone Type",
+        "Price",
+        "Review",
+        "Color",
+        "Material",
+        "Offer",
+        "All Filters"
+      ],
+      "right_control": "Sort by",
+      "pill_style": {
+        "background": "#E7E7E7",
+        "text_color": "#1F2937",
+        "border": "1px solid transparent",
+        "border_radius": "999px",
+        "height": "40px",
+        "padding": "0 16px"
+      }
+    },
+    "products": {
+      "section_title": "Headphones For You!",
+      "grid": {
+        "columns": {
+          "xl": 4,
+          "lg": 3,
+          "md": 2,
+          "sm": 2,
+          "xs": 1
+        },
+        "gap": "20px"
+      },
+      "card": {
+        "background": "#FFFFFF",
+        "radius": "12px",
+        "padding": "0 0 14px",
+        "image_panel": {
+          "background": "#EFEFEF",
+          "aspect_ratio": "1 / 1",
+          "radius": "12px"
+        },
+        "wishlist": {
+          "style": "floating_circle",
+          "position": "top_right"
+        },
+        "name": {
+          "font_size": "34px",
+          "font_weight": "600",
+          "line_clamp": 2
+        },
+        "description": {
+          "font_size": "20px",
+          "color": "#6B7280",
+          "line_clamp": 1
+        },
+        "price": {
+          "font_size": "30px",
+          "font_weight": "700",
+          "currency": "USD",
+          "format": "$0.00"
+        },
+        "rating": {
+          "style": "green_stars",
+          "filled": "#00A63E"
+        },
+        "cta": {
+          "label": "Add to Cart",
+          "style": "outline_pill"
+        }
+      }
+    }
+  },
+  "design_tokens": {
+    "colors": {
+      "brand_primary": "#0C513F",
+      "accent_primary": "#00553A",
+      "page_background": "#F3F3F3",
+      "surface": "#FFFFFF",
+      "surface_muted": "#EFEFEF",
+      "surface_tint": "#EFE6DB",
+      "text_primary": "#0F172A",
+      "text_secondary": "#6B7280",
+      "border": "#E5E7EB",
+      "rating_positive": "#00A63E"
+    },
+    "typography": {
+      "font_family": "Poppins, sans-serif",
+      "hero_title": {
+        "size": "64px",
+        "weight": "700"
+      },
+      "section_title": {
+        "size": "44px",
+        "weight": "700"
+      },
+      "product_title": {
+        "size": "34px",
+        "weight": "600"
+      },
+      "body": {
+        "size": "20px",
+        "weight": "400"
+      },
+      "label": {
+        "size": "18px",
+        "weight": "500"
+      }
+    },
+    "radius": {
+      "card": "12px",
+      "pill": "999px",
+      "popover": "16px"
+    },
+    "spacing": {
+      "page_x": "24px",
+      "section_gap": "28px",
+      "grid_gap": "20px",
+      "card_inner_gap": "10px"
+    },
+    "shadows": {
+      "card": "0 2px 10px rgba(15, 23, 42, 0.06)",
+      "popover": "0 20px 44px rgba(17, 24, 39, 0.18)"
+    }
+  },
+  "interaction_contracts": {
+    "cross_mfe_search": {
+      "writer": "mfe-shell",
+      "reader": "mfe-catalog",
+      "transport": "window_custom_events",
+      "canonical_owner": "shell_header_search",
+      "events": [
+        {
+          "name": "catalog:search-query:set",
+          "direction": "shell_to_catalog",
+          "detail": {
+            "query": "string",
+            "source": "shell_header",
+            "updatedAt": "ISO_8601"
+          }
+        },
+        {
+          "name": "catalog:search-query:request",
+          "direction": "catalog_to_shell",
+          "detail": {}
+        },
+        {
+          "name": "catalog:search-query:state",
+          "direction": "shell_to_all",
+          "detail": {
+            "query": "string",
+            "updatedAt": "ISO_8601"
+          }
+        }
+      ]
+    },
+    "cart_preview": {
+      "writer": "mfe-shell_cart_store",
+      "reader": "mfe-shell_header",
+      "open_behavior": "open_on_hover_and_focus",
+      "close_behavior": "close_on_mouse_leave_escape_blur",
+      "delay": {
+        "open_ms": 80,
+        "close_ms": 120
+      }
+    }
+  },
+  "tailwind_guidelines": {
+    "mandatory": true,
+    "rules": [
+      "Use Tailwind utilities and semantic design tokens for all view-layer styling.",
+      "Do not create new component-scoped CSS files for shell, catalog, or cart UI surfaces.",
+      "Keep shared tokens in Tailwind config and use consistent class names across MFEs."
+    ]
+  },
+  "responsive_behavior": {
+    "header": {
+      "desktop": "full menu with inline search",
+      "tablet": "collapse nav spacing, retain search",
+      "mobile": "stack brand/search/actions, keep cart preview accessible on focus"
+    },
+    "catalog": {
+      "banner": "maintain top placement, stack text and image on small screens",
+      "filters": "wrap into multiple lines",
+      "products": "reduce columns progressively without layout shift"
+    }
+  }
+}

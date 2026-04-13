@@ -1,0 +1,241 @@
+{
+  "meta": {
+    "spec_id": "006",
+    "name": "product_details_shopcart_style",
+    "source": "Image 2",
+    "last_updated": "2026-04-13"
+  },
+  "page": {
+    "type": "product_detail",
+    "background_color": "#FFFFFF",
+    "layout": "two_column",
+    "max_width": "1320px",
+    "sections": [
+      "breadcrumbs",
+      "gallery",
+      "details"
+    ]
+  },
+  "breadcrumbs": {
+    "style": {
+      "font_size": "18px",
+      "font_weight": "500",
+      "color": "#9CA3AF",
+      "separator": "/"
+    },
+    "active_item_color": "#111827"
+  },
+  "layout": {
+    "desktop": {
+      "columns": "1.15fr 1fr",
+      "gap": "42px",
+      "align_items": "start"
+    },
+    "tablet": {
+      "columns": "1fr",
+      "gap": "28px"
+    },
+    "mobile": {
+      "columns": "1fr",
+      "gap": "20px"
+    }
+  },
+  "gallery": {
+    "hero_media": {
+      "aspect_ratio": "1 / 1",
+      "background": "#F3F4F6",
+      "border_radius": "12px",
+      "object_fit": "contain"
+    },
+    "thumbnail_row": {
+      "layout": "horizontal",
+      "gap": "14px",
+      "thumbnail": {
+        "size": "130px",
+        "background": "#F3F4F6",
+        "border_radius": "10px",
+        "active_border": "2px solid #0D5B45"
+      }
+    }
+  },
+  "details": {
+    "title": {
+      "font_size": "64px",
+      "font_weight": "700",
+      "color": "#111827"
+    },
+    "description": {
+      "font_size": "28px",
+      "font_weight": "400",
+      "line_height": "1.45",
+      "color": "#4B5563"
+    },
+    "rating": {
+      "stars": {
+        "filled_color": "#00A63E",
+        "size": "18px"
+      },
+      "review_count": {
+        "font_size": "24px",
+        "color": "#6B7280",
+        "format": "(N)"
+      }
+    },
+    "price_block": {
+      "price": {
+        "font_size": "58px",
+        "font_weight": "700",
+        "currency": "USD",
+        "format": "$0.00"
+      },
+      "installment_text": {
+        "template": "or {monthlyAmount}/month",
+        "font_size": "58px",
+        "font_weight": "700",
+        "currency": "USD"
+      },
+      "subtext": {
+        "text": "Suggested payments with 6 months special financing",
+        "font_size": "26px",
+        "color": "#6B7280"
+      }
+    },
+    "color_picker": {
+      "label": "Choose a Color",
+      "swatches": [
+        {
+          "name": "Coral",
+          "hex": "#EA6A60"
+        },
+        {
+          "name": "Charcoal",
+          "hex": "#2E2E2E"
+        },
+        {
+          "name": "Sage",
+          "hex": "#CAD6C8"
+        },
+        {
+          "name": "Silver",
+          "hex": "#E5E7EB"
+        },
+        {
+          "name": "Blue",
+          "hex": "#34587A"
+        }
+      ],
+      "active_style": {
+        "ring": "2px solid #0D5B45",
+        "ring_offset": "2px"
+      }
+    },
+    "quantity_and_stock": {
+      "quantity_stepper": {
+        "style": "pill_segmented",
+        "height": "58px",
+        "button_width": "52px",
+        "font_size": "36px",
+        "background": "#F3F4F6"
+      },
+      "stock_warning": {
+        "headline": "Only 12 Items Left!",
+        "headline_color": "#F97316",
+        "description": "Don't miss it",
+        "description_color": "#4B5563"
+      }
+    },
+    "actions": {
+      "primary": {
+        "label": "Buy Now",
+        "style": "filled_pill",
+        "background": "#00553A",
+        "text_color": "#FFFFFF",
+        "height": "66px"
+      },
+      "secondary": {
+        "label": "Add to Cart",
+        "style": "outline_pill",
+        "border": "2px solid #0D5B45",
+        "text_color": "#0D5B45",
+        "height": "66px"
+      }
+    },
+    "benefits": {
+      "cards": [
+        {
+          "icon": "truck",
+          "title": "Free Delivery",
+          "description": "Enter your Postal code for Delivery Availability"
+        },
+        {
+          "icon": "box_return",
+          "title": "Return Delivery",
+          "description": "Free 30 days Delivery Returns. Details"
+        }
+      ],
+      "card_style": {
+        "background": "#FFFFFF",
+        "border": "1px solid #E5E7EB",
+        "padding": "18px"
+      }
+    }
+  },
+  "design_tokens": {
+    "colors": {
+      "brand_primary": "#0D5B45",
+      "text_primary": "#111827",
+      "text_secondary": "#6B7280",
+      "surface": "#FFFFFF",
+      "surface_muted": "#F3F4F6",
+      "border": "#E5E7EB",
+      "success": "#00A63E",
+      "warning": "#F97316"
+    },
+    "typography": {
+      "font_family": "Poppins, sans-serif",
+      "title": {
+        "size": "64px",
+        "weight": "700"
+      },
+      "price": {
+        "size": "58px",
+        "weight": "700"
+      },
+      "body": {
+        "size": "28px",
+        "weight": "400"
+      },
+      "label": {
+        "size": "42px",
+        "weight": "600"
+      }
+    },
+    "radius": {
+      "media": "12px",
+      "pill": "999px",
+      "swatch": "999px"
+    },
+    "spacing": {
+      "section_gap": "28px",
+      "block_gap": "20px"
+    }
+  },
+  "interaction_patterns": {
+    "thumbnail_select": {
+      "trigger": "click",
+      "behavior": "updates_hero_media"
+    },
+    "color_select": {
+      "trigger": "click",
+      "behavior": "updates_selected_variant"
+    },
+    "quantity_update": {
+      "trigger": "click_or_keyboard",
+      "behavior": "increment_or_decrement"
+    },
+    "add_to_cart": {
+      "trigger": "click",
+      "behavior": "dispatch_cart_add_item_event"
+    }
+  }
+}
