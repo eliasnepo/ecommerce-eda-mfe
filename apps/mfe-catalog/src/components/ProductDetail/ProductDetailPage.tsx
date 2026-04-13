@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import { useProduct } from '../../hooks/useProduct'
+import { formatPrice } from '../../utils/formatPrice'
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -79,8 +80,7 @@ export default function ProductDetailPage() {
                   {product.description ?? 'No description provided.'}
                 </p>
                 <p className="mb-6 text-3xl font-bold text-primary-text">
-                  {product.price.toFixed(2)}{' '}
-                  <sup className="text-lg font-normal">AED</sup>
+                  {formatPrice(product.price)}
                 </p>
                 <button
                   onClick={handleAddToCart}

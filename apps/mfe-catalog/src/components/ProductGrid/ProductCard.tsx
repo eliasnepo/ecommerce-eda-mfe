@@ -1,5 +1,6 @@
 import type { MouseEvent } from 'react'
 import type { Product } from '../../types/product'
+import { formatPrice } from '../../utils/formatPrice'
 import StarRating from '../ui/StarRating'
 import WishlistButton from '../ui/WishlistButton'
 
@@ -48,7 +49,7 @@ export default function ProductCard({ product }: Props) {
         </p>
         <StarRating rating={4} reviewCount="-" />
         <p className="mt-1 text-[15px] font-bold text-primary-text">
-          {product.price.toFixed(2)} <sup className="text-xs font-normal">AED</sup>
+          {formatPrice(product.price)}
         </p>
         <button
           onClick={handleAddToCart}

@@ -115,7 +115,7 @@ class ProductServiceTest {
     @Test
     @SuppressWarnings("unchecked")
     void search_withQueryFilter_executesMultiMatchQuery() {
-        ProductFilter filter = new ProductFilter("headphones", null, null, null);
+        ProductFilter filter = new ProductFilter("headphones", null, null, null, null);
         UUID id = UUID.randomUUID();
         Product product = product("Wireless Headphones", "Electronics", new BigDecimal("49.99"));
         product.setId(id);
@@ -170,12 +170,114 @@ class ProductServiceTest {
         // Postgres returns them in different order
         when(productRepository.findAllById(any())).thenReturn(List.of(p2, p1));
 
-        var result = productService.search(new ProductFilter("headphones", null, null, null), PageRequest.of(0, 20));
+        var result = productService.search(
+                new ProductFilter("headphones", null, null, null, null),
+                PageRequest.of(0, 20));
 
         assertThat(result.getContent()).hasSize(2);
         // Should preserve ES order: p1 first
         assertThat(result.getContent().get(0).getId()).isEqualTo(id1);
         assertThat(result.getContent().get(1).getId()).isEqualTo(id2);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void search_withPriceAscendingSort_returnsAscendingPriceOrder() {
+        UUID cheapId = UUID.randomUUID();
+        UUID expensiveId = UUID.randomUUID();
+
+        Product cheap = product("Budget Headphones", "Electronics", new BigDecimal("19.99"));
+        cheap.setId(cheapId);
+        Product expensive = product("Premium Headphones", "Electronics", new BigDecimal("199.99"));
+        expensive.setId(expensiveId);
+
+        ProductDocument cheapDoc = new ProductDocument();
+        cheapDoc.setId(cheapId.toString());
+        ProductDocument expensiveDoc = new ProductDocument();
+        expensiveDoc.setId(expensiveId.toString());
+
+        SearchHit<ProductDocument> cheapHit = mock(SearchHit.class);
+        when(cheapHit.getContent()).thenReturn(cheapDoc);
+        SearchHit<ProductDocument> expensiveHit = mock(SearchHit.class);
+        when(expensiveHit.getContent()).thenReturn(expensiveDoc);
+
+        SearchHits<ProductDocument> hits = mock(SearchHits.class);
+        when(hits.stream()).thenReturn(Stream.of(cheapHit, expensiveHit));
+        when(hits.getTotalHits()).thenReturn(2L);
+
+        doReturn(hits).when(elasticsearchOperations).search(any(NativeQuery.class), eq(ProductDocument.class));
+        when(productRepository.findAllById(any())).thenReturn(List.of(expensive, cheap));
+
+        var result = productService.search(
+                new ProductFilter(null, null, null, null, ProductSortBy.PRICE_ASC),
+                PageRequest.of(0, 20));
+
+        assertThat(result.getContent()).extracting(Product::getPrice)
+                .containsExactly(new BigDecimal("19.99"), new BigDecimal("199.99"));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void search_withPriceDescendingSort_returnsDescendingPriceOrder() {
+        UUID cheapId = UUID.randomUUID();
+        UUID expensiveId = UUID.randomUUID();
+
+        Product cheap = product("Budget Headphones", "Electronics", new BigDecimal("19.99"));
+        cheap.setId(cheapId);
+        Product expensive = product("Premium Headphones", "Electronics", new BigDecimal("199.99"));
+        expensive.setId(expensiveId);
+
+        ProductDocument expensiveDoc = new ProductDocument();
+        expensiveDoc.setId(expensiveId.toString());
+        ProductDocument cheapDoc = new ProductDocument();
+        cheapDoc.setId(cheapId.toString());
+
+        SearchHit<ProductDocument> expensiveHit = mock(SearchHit.class);
+        when(expensiveHit.getContent()).thenReturn(expensiveDoc);
+        SearchHit<ProductDocument> cheapHit = mock(SearchHit.class);
+        when(cheapHit.getContent()).thenReturn(cheapDoc);
+
+        SearchHits<ProductDocument> hits = mock(SearchHits.class);
+        when(hits.stream()).thenReturn(Stream.of(expensiveHit, cheapHit));
+        when(hits.getTotalHits()).thenReturn(2L);
+
+        doReturn(hits).when(elasticsearchOperations).search(any(NativeQuery.class), eq(ProductDocument.class));
+        when(productRepository.findAllById(any())).thenReturn(List.of(cheap, expensive));
+
+        var result = productService.search(
+                new ProductFilter(null, null, null, null, ProductSortBy.PRICE_DESC),
+                PageRequest.of(0, 20));
+
+        assertThat(result.getContent()).extracting(Product::getPrice)
+                .containsExactly(new BigDecimal("199.99"), new BigDecimal("19.99"));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void search_withFuzzyTerm_returnsWirelessProduct() {
+        ProductFilter filter = new ProductFilter("wirels", null, null, null, null);
+        UUID id = UUID.randomUUID();
+        Product product = product("Wireless Headphones", "Electronics", new BigDecimal("49.99"));
+        product.setId(id);
+
+        ProductDocument doc = new ProductDocument();
+        doc.setId(id.toString());
+        doc.setName("Wireless Headphones");
+
+        SearchHit<ProductDocument> hit = mock(SearchHit.class);
+        when(hit.getContent()).thenReturn(doc);
+
+        SearchHits<ProductDocument> hits = mock(SearchHits.class);
+        when(hits.stream()).thenReturn(Stream.of(hit));
+        when(hits.getTotalHits()).thenReturn(1L);
+
+        doReturn(hits).when(elasticsearchOperations).search(any(NativeQuery.class), eq(ProductDocument.class));
+        when(productRepository.findAllById(List.of(id))).thenReturn(List.of(product));
+
+        var result = productService.search(filter, PageRequest.of(0, 20));
+
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().get(0).getName()).containsIgnoringCase("wireless");
     }
 
     private Product product(String name, String category, BigDecimal price) {

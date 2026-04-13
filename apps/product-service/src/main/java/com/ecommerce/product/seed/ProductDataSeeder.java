@@ -14,6 +14,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @Component
@@ -24,6 +25,43 @@ public class ProductDataSeeder implements ApplicationRunner {
     private final ProductRepository productRepository;
 
     private static final int TARGET_COUNT = 100;
+    private static final Map<String, List<String>> REAL_IMAGE_URLS_BY_CATEGORY = Map.of(
+            "Electronics", List.of(
+                    "https://images.unsplash.com/photo-1580894732444-8ecded7900cd?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1484704849700-f032a568e944?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1516724562728-afc824a36e84?auto=format&fit=crop&w=800&q=80"
+            ),
+            "Clothing", List.of(
+                    "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80"
+            ),
+            "Books", List.of(
+                    "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1513001900722-370f803f498d?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=800&q=80"
+            ),
+            "Home & Kitchen", List.of(
+                    "https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1523413651479-597eb2da0ad6?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?auto=format&fit=crop&w=800&q=80"
+            ),
+            "Sports", List.of(
+                    "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=800&q=80"
+            )
+    );
 
     public ProductDataSeeder(ProductService productService, ProductRepository productRepository) {
         this.productService = productService;
@@ -88,8 +126,7 @@ public class ProductDataSeeder implements ApplicationRunner {
                     p.setCategory(tpl.category());
                     p.setPrice(BigDecimal.valueOf(5 + random.nextDouble() * 495)
                                         .setScale(2, RoundingMode.HALF_UP));
-                    p.setImageUrl("https://placehold.co/400x300?text=" +
-                                  URLEncoder.encode(variant, StandardCharsets.UTF_8));
+                    p.setImageUrl(resolveImageUrl(tpl.category(), variant));
                     products.add(p);
                     produced++;
                 }
@@ -97,5 +134,25 @@ public class ProductDataSeeder implements ApplicationRunner {
         }
 
         return products;
+    }
+
+    private String resolveImageUrl(String category, String productName) {
+        List<String> candidateUrls = REAL_IMAGE_URLS_BY_CATEGORY.get(category);
+        if (candidateUrls == null || candidateUrls.isEmpty()) {
+            return buildPlaceholderImageUrl(productName);
+        }
+
+        int index = Math.floorMod((category + ":" + productName).hashCode(), candidateUrls.size());
+        String selectedUrl = candidateUrls.get(index);
+        if (selectedUrl == null || selectedUrl.isBlank()) {
+            return buildPlaceholderImageUrl(productName);
+        }
+
+        return selectedUrl;
+    }
+
+    private String buildPlaceholderImageUrl(String productName) {
+        return "https://placehold.co/400x300?text="
+                + URLEncoder.encode(productName, StandardCharsets.UTF_8);
     }
 }

@@ -8,6 +8,13 @@ input ProductFilter {
   category: String
   minPrice: Float
   maxPrice: Float
+  sortBy: ProductSortBy
+}
+
+enum ProductSortBy {
+  RELEVANCE
+  PRICE_ASC
+  PRICE_DESC
 }
 
 type Product {

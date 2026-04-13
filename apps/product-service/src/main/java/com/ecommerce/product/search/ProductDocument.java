@@ -10,6 +10,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 public class ProductDocument {
 
     @Id
+    @Field(type = FieldType.Keyword)
     private String id;
 
     @Field(type = FieldType.Text, analyzer = "standard")

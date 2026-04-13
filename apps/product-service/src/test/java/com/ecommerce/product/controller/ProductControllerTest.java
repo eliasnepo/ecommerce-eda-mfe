@@ -2,8 +2,10 @@ package com.ecommerce.product.controller;
 
 import com.ecommerce.product.domain.Product;
 import com.ecommerce.product.service.ProductFilter;
+import com.ecommerce.product.service.ProductSortBy;
 import com.ecommerce.product.service.ProductService;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.GraphQlTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -17,7 +19,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @GraphQlTest(ProductController.class)
@@ -63,7 +67,7 @@ class ProductControllerTest {
 
         graphQlTester.document("""
                 {
-                  products(filter: { query: "headphones", category: "Electronics", maxPrice: 100 }) {
+                  products(filter: { query: "headphones", category: "Electronics", maxPrice: 100, sortBy: PRICE_ASC }) {
                     content { name }
                     totalElements
                   }
@@ -72,6 +76,11 @@ class ProductControllerTest {
                 .execute()
                 .path("products.content[0].name").entity(String.class).isEqualTo("Wireless Headphones")
                 .path("products.totalElements").entity(Integer.class).isEqualTo(1);
+
+        ArgumentCaptor<ProductFilter> filterCaptor = ArgumentCaptor.forClass(ProductFilter.class);
+        verify(productService).search(filterCaptor.capture(), any());
+        assertThat(filterCaptor.getValue()).isNotNull();
+        assertThat(filterCaptor.getValue().sortBy()).isEqualTo(ProductSortBy.PRICE_ASC);
     }
 
     @Test

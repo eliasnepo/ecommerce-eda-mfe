@@ -24,8 +24,7 @@ describe('ProductCard', () => {
     render(<ProductCard product={product} />)
 
     expect(screen.getByText('Wireless Headphones')).toBeInTheDocument()
-    expect(screen.getByText('99.99')).toBeInTheDocument()
-    expect(screen.getByText('AED')).toBeInTheDocument()
+    expect(screen.getByText('$99.99')).toBeInTheDocument()
   })
 
   it('dispatches cart:add-item event with expected detail', async () => {

@@ -12,6 +12,7 @@ import com.ecommerce.product.search.ProductIndexingService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -72,11 +73,13 @@ public class ProductService {
 
     private NativeQuery buildQuery(ProductFilter filter, Pageable pageable) {
         BoolQuery.Builder bool = new BoolQuery.Builder();
+        ProductSortBy sortBy = resolveSortBy(filter);
 
         if (filter != null && filter.query() != null && !filter.query().isBlank()) {
             bool.must(MultiMatchQuery.of(m -> m
                     .query(filter.query())
                     .fields("name^2", "description")
+                    .fuzziness("AUTO")
             )._toQuery());
         }
 
@@ -94,9 +97,24 @@ public class ProductService {
             bool.filter(range.build()._toQuery());
         }
 
-        return NativeQuery.builder()
+        var queryBuilder = NativeQuery.builder()
                 .withQuery(bool.build()._toQuery())
-                .withPageable(pageable)
-                .build();
+                .withPageable(pageable);
+
+        if (sortBy == ProductSortBy.PRICE_ASC) {
+            queryBuilder.withSort(Sort.by(Sort.Order.asc("price"), Sort.Order.asc("id")));
+        } else if (sortBy == ProductSortBy.PRICE_DESC) {
+            queryBuilder.withSort(Sort.by(Sort.Order.desc("price"), Sort.Order.asc("id")));
+        }
+
+        return queryBuilder.build();
+    }
+
+    private ProductSortBy resolveSortBy(ProductFilter filter) {
+        if (filter == null || filter.sortBy() == null) {
+            return ProductSortBy.RELEVANCE;
+        }
+
+        return filter.sortBy();
     }
 }

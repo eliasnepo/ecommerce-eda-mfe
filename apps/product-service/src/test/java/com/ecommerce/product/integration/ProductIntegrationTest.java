@@ -4,6 +4,7 @@ import com.ecommerce.product.domain.Product;
 import com.ecommerce.product.repository.ProductRepository;
 import com.ecommerce.product.search.ProductDocument;
 import com.ecommerce.product.service.ProductFilter;
+import com.ecommerce.product.service.ProductSortBy;
 import com.ecommerce.product.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -134,7 +135,7 @@ class ProductIntegrationTest {
         refreshIndex();
 
         Page<Product> result = productService.search(
-                new ProductFilter("headphones", null, null, null), PageRequest.of(0, 20));
+                new ProductFilter("headphones", null, null, null, null), PageRequest.of(0, 20));
 
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).getName()).isEqualTo("Wireless Headphones");
@@ -148,7 +149,7 @@ class ProductIntegrationTest {
         refreshIndex();
 
         Page<Product> result = productService.search(
-                new ProductFilter(null, "Electronics", null, null), PageRequest.of(0, 20));
+                new ProductFilter(null, "Electronics", null, null, null), PageRequest.of(0, 20));
 
         assertThat(result.getContent()).hasSize(2);
         assertThat(result.getContent()).allMatch(p -> "Electronics".equals(p.getCategory()));
@@ -162,7 +163,7 @@ class ProductIntegrationTest {
         refreshIndex();
 
         Page<Product> result = productService.search(
-                new ProductFilter(null, null, 10.0, 100.0), PageRequest.of(0, 20));
+                new ProductFilter(null, null, 10.0, 100.0, null), PageRequest.of(0, 20));
 
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).getName()).isEqualTo("Mid Item");
@@ -176,7 +177,7 @@ class ProductIntegrationTest {
         refreshIndex();
 
         Page<Product> result = productService.search(
-                new ProductFilter(null, "Electronics", null, 100.0), PageRequest.of(0, 20));
+                new ProductFilter(null, "Electronics", null, 100.0, null), PageRequest.of(0, 20));
 
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).getName()).isEqualTo("Budget Headphones");
@@ -196,6 +197,51 @@ class ProductIntegrationTest {
         assertThat(page2.getContent()).hasSize(2);
         assertThat(page1.getTotalElements()).isEqualTo(5);
         assertThat(page1.getTotalPages()).isEqualTo(3);
+    }
+
+    @Test
+    void search_withFuzzyTerm_matchesWirelessProducts() {
+        productService.save(product("Wireless Headphones", "Electronics", new BigDecimal("49.99")));
+        productService.save(product("Bluetooth Speaker", "Electronics", new BigDecimal("29.99")));
+        refreshIndex();
+
+        Page<Product> result = productService.search(
+                new ProductFilter("wirels", null, null, null, ProductSortBy.RELEVANCE),
+                PageRequest.of(0, 20));
+
+        assertThat(result.getContent()).isNotEmpty();
+        assertThat(result.getContent())
+                .extracting(Product::getName)
+                .anyMatch(name -> name.toLowerCase().contains("wireless"));
+    }
+
+    @Test
+    void search_withPriceSort_returnsExpectedOrder() {
+        productService.save(product("Budget Mouse", "Electronics", new BigDecimal("9.99")));
+        productService.save(product("Mid Keyboard", "Electronics", new BigDecimal("49.99")));
+        productService.save(product("Premium Monitor", "Electronics", new BigDecimal("199.99")));
+        refreshIndex();
+
+        Page<Product> ascending = productService.search(
+                new ProductFilter(null, null, null, null, ProductSortBy.PRICE_ASC),
+                PageRequest.of(0, 20));
+        Page<Product> descending = productService.search(
+                new ProductFilter(null, null, null, null, ProductSortBy.PRICE_DESC),
+                PageRequest.of(0, 20));
+
+        assertThat(ascending.getContent())
+                .extracting(Product::getPrice)
+                .containsExactly(
+                        new BigDecimal("9.99"),
+                        new BigDecimal("49.99"),
+                        new BigDecimal("199.99"));
+
+        assertThat(descending.getContent())
+                .extracting(Product::getPrice)
+                .containsExactly(
+                        new BigDecimal("199.99"),
+                        new BigDecimal("49.99"),
+                        new BigDecimal("9.99"));
     }
 
     private Product product(String name, String category, BigDecimal price) {

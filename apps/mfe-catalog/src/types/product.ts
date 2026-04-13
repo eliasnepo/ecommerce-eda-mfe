@@ -19,7 +19,10 @@ export interface ProductFilter {
   category?: string
   minPrice?: number
   maxPrice?: number
+  sortBy?: ProductSortBy
 }
+
+export type ProductSortBy = 'relevance' | 'price_asc' | 'price_desc'
 
 export interface Store {
   id: string

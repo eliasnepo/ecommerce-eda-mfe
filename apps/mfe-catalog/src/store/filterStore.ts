@@ -1,9 +1,9 @@
 import { useStore } from '@tanstack/react-store'
 import { Store } from '@tanstack/store'
-import type { ProductFilter } from '../types/product'
+import type { ProductFilter, ProductSortBy } from '../types/product'
 
 export interface FilterState extends ProductFilter {
-  sortBy: 'relevance' | 'price_asc' | 'price_desc'
+  sortBy: ProductSortBy
   page: number
 }
 

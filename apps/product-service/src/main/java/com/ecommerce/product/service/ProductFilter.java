@@ -4,5 +4,6 @@ public record ProductFilter(
         String query,
         String category,
         Double minPrice,
-        Double maxPrice
+        Double maxPrice,
+        ProductSortBy sortBy
 ) {}

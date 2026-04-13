@@ -1,6 +1,8 @@
 import { gql } from 'graphql-request'
 import type { ProductPage } from '../../types/product'
 
+export type ProductSortByInput = 'RELEVANCE' | 'PRICE_ASC' | 'PRICE_DESC'
+
 export const PRODUCTS_QUERY = gql`
   query Products($filter: ProductFilter, $page: Int, $size: Int) {
     products(filter: $filter, page: $page, size: $size) {
@@ -25,6 +27,7 @@ export interface ProductsQueryVariables {
     category?: string
     minPrice?: number
     maxPrice?: number
+    sortBy?: ProductSortByInput
   }
   page?: number
   size?: number

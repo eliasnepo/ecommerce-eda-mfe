@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { graphqlClient } from '../api/graphqlClient'
 import {
   PRODUCTS_QUERY,
+  type ProductSortByInput,
   type ProductsQueryResult,
   type ProductsQueryVariables,
 } from '../api/queries/products.gql'
@@ -16,6 +17,7 @@ export function useProducts(filter: ProductFilter, page: number) {
       category: filter.category,
       minPrice: filter.minPrice,
       maxPrice: filter.maxPrice,
+      sortBy: toProductSortByInput(filter.sortBy),
     },
     page,
     size: PAGE_SIZE,
@@ -28,4 +30,20 @@ export function useProducts(filter: ProductFilter, page: number) {
     staleTime: 30_000,
     placeholderData: (previousData) => previousData,
   })
+}
+
+function toProductSortByInput(sortBy: ProductFilter['sortBy']): ProductSortByInput | undefined {
+  if (!sortBy) {
+    return undefined
+  }
+
+  if (sortBy === 'price_asc') {
+    return 'PRICE_ASC'
+  }
+
+  if (sortBy === 'price_desc') {
+    return 'PRICE_DESC'
+  }
+
+  return 'RELEVANCE'
 }

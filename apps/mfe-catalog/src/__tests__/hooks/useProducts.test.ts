@@ -3,7 +3,7 @@ import { renderHook, waitFor } from '@testing-library/react'
 import { delay, graphql, HttpResponse } from 'msw'
 import { createElement } from 'react'
 import type { PropsWithChildren } from 'react'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { useProducts } from '../../hooks/useProducts'
 import { server } from '../../test/mswServer'
 
@@ -117,6 +117,94 @@ describe('useProducts', () => {
           'products',
           expect.objectContaining({
             filter: expect.objectContaining({ query: 'jackets' }),
+          }),
+        ],
+      ]),
+    )
+  })
+
+  it('sends mapped sortBy value and partitions cache by sort mode', async () => {
+    const requestSpy = vi.fn()
+
+    server.use(
+      graphql.query('Products', ({ variables }) => {
+        requestSpy(variables)
+
+        return HttpResponse.json({
+          data: {
+            products: {
+              content: [
+                {
+                  id: 'prod-1',
+                  name: 'Wireless Headphones',
+                  description: 'Great sound',
+                  price: 99.99,
+                  category: 'Electronics',
+                  imageUrl: null,
+                },
+              ],
+              totalElements: 1,
+              totalPages: 1,
+              currentPage: 0,
+            },
+          },
+        })
+      }),
+    )
+
+    const queryClient = createTestQueryClient()
+
+    const { result, rerender } = renderHook(
+      ({ sortBy }: { sortBy: 'price_asc' | 'price_desc' }) =>
+        useProducts({ sortBy }, 0),
+      {
+        wrapper: createWrapper(queryClient),
+        initialProps: { sortBy: 'price_asc' },
+      },
+    )
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true)
+    })
+
+    rerender({ sortBy: 'price_desc' })
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true)
+    })
+
+    expect(
+      requestSpy.mock.calls.some(
+        ([variables]) =>
+          (variables as { filter?: { sortBy?: string } })?.filter?.sortBy ===
+          'PRICE_ASC',
+      ),
+    ).toBe(true)
+    expect(
+      requestSpy.mock.calls.some(
+        ([variables]) =>
+          (variables as { filter?: { sortBy?: string } })?.filter?.sortBy ===
+          'PRICE_DESC',
+      ),
+    ).toBe(true)
+
+    const queryKeys = queryClient
+      .getQueryCache()
+      .getAll()
+      .map((query) => query.queryKey)
+
+    expect(queryKeys).toEqual(
+      expect.arrayContaining([
+        [
+          'products',
+          expect.objectContaining({
+            filter: expect.objectContaining({ sortBy: 'PRICE_ASC' }),
+          }),
+        ],
+        [
+          'products',
+          expect.objectContaining({
+            filter: expect.objectContaining({ sortBy: 'PRICE_DESC' }),
           }),
         ],
       ]),

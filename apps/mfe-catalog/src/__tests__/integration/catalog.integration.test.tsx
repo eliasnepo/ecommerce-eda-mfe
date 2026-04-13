@@ -11,6 +11,7 @@ interface GraphqlPayload {
     filter?: {
       query?: string
       category?: string
+      sortBy?: string
     }
   }
 }
@@ -23,7 +24,7 @@ describe('Catalog + Gateway integration', () => {
     }
   })
 
-  it('loads products and re-queries on search/category filter changes', async () => {
+  it('loads products and re-queries on search/category/sort filter changes', async () => {
     resetFilters()
 
     const requests: GraphqlPayload[] = []
@@ -101,6 +102,21 @@ describe('Catalog + Gateway integration', () => {
             (payload) =>
               payload.operationName === 'Products' &&
               payload.variables?.filter?.category === 'Electronics',
+          ),
+        ).toBe(true)
+      })
+
+      const requestsBeforeSort = requests.length
+      await user.click(screen.getByRole('button', { name: /sort/i }))
+      await user.click(screen.getByRole('option', { name: 'Price: High to Low' }))
+
+      await waitFor(() => {
+        const freshRequests = requests.slice(requestsBeforeSort)
+        expect(
+          freshRequests.some(
+            (payload) =>
+              payload.operationName === 'Products' &&
+              payload.variables?.filter?.sortBy === 'PRICE_DESC',
           ),
         ).toBe(true)
       })
