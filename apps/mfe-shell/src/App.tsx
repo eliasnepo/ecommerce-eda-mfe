@@ -7,11 +7,13 @@ import {
   removeCartItem,
   updateCartItemQuantity,
 } from './cart/useCartStore'
+import { createSearchEventBridge } from './search/searchEventBridge'
+import { getSearchSnapshot, setSearchQuery } from './search/useSearchStore'
 import AppRoutes from './routing/AppRoutes'
 
 export default function App() {
   useEffect(() => {
-    const cleanup = createCartEventBridge({
+    const cleanupCartBridge = createCartEventBridge({
       addItem: addItemToCart,
       updateItem: updateCartItemQuantity,
       removeItem: removeCartItem,
@@ -19,7 +21,15 @@ export default function App() {
       getSnapshot: getCartSnapshot,
     })
 
-    return cleanup
+    const cleanupSearchBridge = createSearchEventBridge({
+      setQuery: setSearchQuery,
+      getSnapshot: getSearchSnapshot,
+    })
+
+    return () => {
+      cleanupCartBridge()
+      cleanupSearchBridge()
+    }
   }, [])
 
   return <AppRoutes />

@@ -5,6 +5,7 @@ interface Props {
   active?: boolean
   onClick: () => void
   children?: ReactNode
+  className?: string
 }
 
 export default function FilterPill({
@@ -12,16 +13,17 @@ export default function FilterPill({
   active = false,
   onClick,
   children,
+  className,
 }: Props) {
   return (
-    <div className="relative">
+    <div className={["relative", className].join(' ')}>
       <button
         onClick={onClick}
         className={[
-          'flex items-center gap-1 rounded-pill border px-3.5 py-1.5 text-sm',
+          'flex min-h-10 items-center gap-1 rounded-pill border px-4 text-sm font-medium',
           active
-            ? 'border-link bg-link text-white'
-            : 'border-border bg-card-bg text-primary-text',
+            ? 'border-brand-primary bg-brand-primary text-white'
+            : 'border-transparent bg-[#E7E7E7] text-primary-text',
         ].join(' ')}
       >
         {label}

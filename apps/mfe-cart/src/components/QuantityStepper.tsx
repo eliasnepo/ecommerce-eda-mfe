@@ -23,22 +23,25 @@ export default function QuantityStepper({
   }
 
   return (
-    <div className="qty-stepper" aria-label="Quantity controls">
+    <div
+      className="inline-flex items-center rounded-pill border border-border bg-surface-muted px-1.5"
+      aria-label="Quantity controls"
+    >
       <button
         type="button"
         onClick={onDecrement}
-        className="qty-button"
+        className="h-8 w-8 rounded-pill text-lg text-text-primary"
         aria-label="Decrease quantity"
       >
         -
       </button>
-      <span className="qty-value" aria-live="polite">
+      <span className="min-w-8 text-center text-sm font-semibold text-text-primary" aria-live="polite">
         {quantity}
       </span>
       <button
         type="button"
         onClick={onIncrement}
-        className="qty-button"
+        className="h-8 w-8 rounded-pill text-lg text-text-primary"
         aria-label="Increase quantity"
       >
         +

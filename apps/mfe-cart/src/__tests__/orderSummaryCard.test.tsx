@@ -10,13 +10,19 @@ describe('OrderSummaryCard', () => {
         shipping={0}
         tax={0}
         total={129.99}
+        couponCode=""
+        onCouponCodeChange={vi.fn()}
+        paymentMethod="credit_debit"
+        onPaymentMethodChange={vi.fn()}
         onCheckout={vi.fn()}
         checkoutDisabled={false}
         checkoutLoading={false}
       />,
     )
 
+    expect(screen.getByText('Order Summary')).toBeInTheDocument()
     expect(screen.getAllByText('$129.99')).toHaveLength(2)
     expect(screen.getByText('Free')).toBeInTheDocument()
+    expect(screen.getByRole('textbox', { name: 'Coupon code' })).toBeInTheDocument()
   })
 })

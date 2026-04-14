@@ -59,9 +59,8 @@ describe('Catalog + Gateway integration', () => {
       )
 
       expect(
-        screen.getByRole('searchbox', { name: 'Search products' }),
+        screen.getByRole('heading', { name: 'Products for you!' }),
       ).toBeInTheDocument()
-      expect(screen.getByRole('heading', { name: 'Result' })).toBeInTheDocument()
 
       await waitFor(() => {
         expect(requests.some((payload) => payload.operationName === 'Products')).toBe(
@@ -73,11 +72,16 @@ describe('Catalog + Gateway integration', () => {
         expect(screen.getAllByRole('article').length).toBeGreaterThan(0)
       })
 
-      const searchInput = screen.getByRole('searchbox', { name: 'Search products' })
-
       const requestsBeforeSearch = requests.length
-      await user.clear(searchInput)
-      await user.type(searchInput, 'shoe')
+      window.dispatchEvent(
+        new CustomEvent('catalog:search-query:set', {
+          detail: {
+            query: 'shoe',
+            source: 'shell_header',
+            updatedAt: new Date().toISOString(),
+          },
+        }),
+      )
 
       await waitFor(() => {
         const freshRequests = requests.slice(requestsBeforeSearch)

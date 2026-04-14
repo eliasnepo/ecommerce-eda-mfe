@@ -34,7 +34,7 @@ describe('ProductCard', () => {
     render(<ProductCard product={{ ...product, name: longName }} />)
 
     const nameElement = screen.getByTitle(longName)
-    expect(nameElement).toHaveClass('truncate')
+    expect(nameElement).toHaveClass('line-clamp-2')
     expect(nameElement).toHaveTextContent(longName)
   })
 
@@ -53,7 +53,7 @@ describe('ProductCard', () => {
     expect(image).toHaveClass('h-full')
     expect(image).toHaveClass('w-full')
     expect(image).toHaveClass('object-cover')
-    expect(image.parentElement).toHaveClass('h-48')
+    expect(image.parentElement).toHaveClass('aspect-square')
     expect(image.parentElement).toHaveClass('overflow-hidden')
   })
 

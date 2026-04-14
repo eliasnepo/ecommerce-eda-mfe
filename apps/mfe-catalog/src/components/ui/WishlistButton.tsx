@@ -16,7 +16,7 @@ export default function WishlistButton({ productId }: Props) {
       aria-label={saved ? 'Remove from wishlist' : 'Add to wishlist'}
       aria-pressed={saved}
       data-testid={`wishlist-${productId}`}
-      className="absolute right-2.5 top-2.5 flex h-[30px] w-[30px] items-center justify-center rounded-full bg-white/75"
+      className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-white/90"
     >
       <svg
         className={`h-4 w-4 ${saved ? 'text-red-500' : 'text-wishlist-icon'}`}

@@ -12,15 +12,15 @@ describe('FilterBar', () => {
   it('renders Category and Sort by pills', () => {
     render(<FilterBar />)
 
-    expect(screen.getByRole('button', { name: /category/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /sort by/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /categories/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /sort by: relevance/i })).toBeInTheDocument()
   })
 
   it('opens listbox when category pill is clicked', async () => {
     const user = userEvent.setup()
     render(<FilterBar />)
 
-    await user.click(screen.getByRole('button', { name: /category/i }))
+    await user.click(screen.getByRole('button', { name: /categories/i }))
 
     expect(screen.getByRole('listbox')).toBeInTheDocument()
   })
@@ -29,7 +29,7 @@ describe('FilterBar', () => {
     const user = userEvent.setup()
     render(<FilterBar />)
 
-    await user.click(screen.getByRole('button', { name: /category/i }))
+    await user.click(screen.getByRole('button', { name: /categories/i }))
     await user.click(screen.getByRole('option', { name: 'Electronics' }))
 
     expect(filterStore.state.category).toBe('Electronics')
@@ -40,11 +40,11 @@ describe('FilterBar', () => {
     const user = userEvent.setup()
     render(<FilterBar />)
 
-    await user.click(screen.getByRole('button', { name: /category/i }))
+    await user.click(screen.getByRole('button', { name: /categories/i }))
     await user.click(screen.getByRole('option', { name: 'Electronics' }))
 
     const selectedPill = screen.getByRole('button', { name: /electronics/i })
-    expect(selectedPill).toHaveClass('bg-link')
+    expect(selectedPill).toHaveClass('bg-brand-primary')
     expect(selectedPill).toHaveClass('text-white')
   })
 })

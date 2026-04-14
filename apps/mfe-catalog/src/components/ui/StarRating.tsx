@@ -5,7 +5,7 @@ interface Props {
 
 export default function StarRating({ rating, reviewCount }: Props) {
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       {Array.from({ length: 5 }).map((_, index) => {
         const filled = index + 1 <= Math.floor(rating)
         const half = !filled && index < rating
@@ -13,7 +13,7 @@ export default function StarRating({ rating, reviewCount }: Props) {
         return (
           <svg
             key={index}
-            className={`h-3 w-3 ${
+            className={`h-4 w-4 ${
               filled || half ? 'text-star-filled' : 'text-star-empty'
             }`}
             viewBox="0 0 20 20"
@@ -27,7 +27,7 @@ export default function StarRating({ rating, reviewCount }: Props) {
         )
       })}
       {reviewCount !== undefined && (
-        <span className="text-[12px] text-secondary-text">({reviewCount})</span>
+        <span className="text-xs text-secondary-text">({reviewCount})</span>
       )}
     </div>
   )

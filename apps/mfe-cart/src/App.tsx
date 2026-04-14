@@ -1,8 +1,7 @@
-import './styles/tokens.css'
-import './styles/cart.css'
 import { Route, Routes } from 'react-router-dom'
 import CartConfirmationPage from './pages/CartConfirmationPage'
 import CartPage from './pages/CartPage'
+import './index.css'
 
 export default function App() {
   return (

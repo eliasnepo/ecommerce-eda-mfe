@@ -46,9 +46,11 @@ export default function AppRoutes({
         <Route
           path="*"
           element={
-            <section className="shell-not-found">
-              <h1>Page not found</h1>
-              <p>Try navigating to Catalog or Cart.</p>
+            <section className="rounded-card border border-border bg-surface p-6 shadow-card">
+              <h1 className="m-0 text-2xl font-bold text-text-primary">Page not found</h1>
+              <p className="mb-0 mt-2 text-sm text-text-secondary">
+                Try navigating to Catalog or Cart.
+              </p>
             </section>
           }
         />

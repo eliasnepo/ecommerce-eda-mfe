@@ -20,24 +20,11 @@ export default function ProductGrid({
 }: Props) {
   return (
     <section aria-labelledby="results-heading">
-      <div className="mb-3 flex items-center justify-between">
-        <h2 id="results-heading" className="text-xl font-bold text-primary-text">
-          Result
-        </h2>
-        <a href="#" className="flex items-center gap-1 text-sm text-link">
-          View All
-          <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden>
-            <path
-              d="M6 4l4 4-4 4"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
-        </a>
-      </div>
+      <h2 id="results-heading" className="mb-5 text-2xl font-bold text-primary-text md:text-3xl">
+        Products for you!
+      </h2>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {isLoading
           ? Array.from({ length: 10 }).map((_, index) => (
               <ProductCardSkeleton key={index} />
@@ -54,7 +41,7 @@ export default function ProductGrid({
           <button
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 0}
-            className="rounded-pill border border-border px-3 py-1.5 text-sm disabled:opacity-40"
+            className="rounded-pill border border-border px-4 py-2 text-sm disabled:opacity-40"
           >
             Previous
           </button>
@@ -64,7 +51,7 @@ export default function ProductGrid({
           <button
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage >= totalPages - 1}
-            className="rounded-pill border border-border px-3 py-1.5 text-sm disabled:opacity-40"
+            className="rounded-pill border border-border px-4 py-2 text-sm disabled:opacity-40"
           >
             Next
           </button>

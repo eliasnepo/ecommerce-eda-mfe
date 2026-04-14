@@ -35,7 +35,7 @@ describe('CartPage', () => {
     expect(await screen.findByText('Your cart is empty')).toBeInTheDocument()
   })
 
-  it('renders populated cart when cart:state-changed arrives', async () => {
+  it('renders three-box checkout layout when cart has items', async () => {
     renderPage()
     await screen.findByText('Your cart is empty')
 
@@ -61,7 +61,11 @@ describe('CartPage', () => {
     })
 
     expect(await screen.findByText('Mechanical Keyboard')).toBeInTheDocument()
-    expect(screen.getAllByText('$179.00').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Review Item And Shipping').length).toBeGreaterThan(0)
+    expect(screen.getByText('Delivery Information')).toBeInTheDocument()
+    expect(screen.getByText('Order Summary')).toBeInTheDocument()
+    expect(screen.getByText('Payment Details')).toBeInTheDocument()
+    expect(screen.getByRole('textbox', { name: 'Coupon code' })).toBeInTheDocument()
   })
 
   it('dispatches cart:remove-item when remove is clicked', async () => {
@@ -100,10 +104,8 @@ describe('CartPage', () => {
     window.removeEventListener('cart:remove-item', removeListener as EventListener)
   })
 
-  it('disables checkout while submitting', async () => {
+  it('switches payment method visibility', async () => {
     const user = userEvent.setup()
-
-    placeOrderMock.mockImplementation(() => new Promise(() => {}))
 
     renderPage()
     await screen.findByText('Your cart is empty')
@@ -129,14 +131,14 @@ describe('CartPage', () => {
       )
     })
 
-    const checkoutButton = await screen.findByRole('button', {
-      name: /place order/i,
-    })
+    expect(screen.getByText('Card Holder Name*')).toBeInTheDocument()
 
-    await act(async () => {
-      await user.click(checkoutButton)
-    })
+    await user.click(screen.getByRole('radio', { name: 'Paypal' }))
 
-    expect(screen.getByRole('button', { name: /placing order/i })).toBeDisabled()
+    expect(screen.queryByText('Card Holder Name*')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('radio', { name: 'Credit or Debit card' }))
+
+    expect(screen.getByText('Card Holder Name*')).toBeInTheDocument()
   })
 })

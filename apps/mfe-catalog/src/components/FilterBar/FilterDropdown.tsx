@@ -13,14 +13,14 @@ export default function FilterDropdown({ options, selected, onSelect }: Props) {
   return (
     <ul
       role="listbox"
-      className="absolute left-0 top-full z-10 mt-1 min-w-[160px] rounded-card border border-border bg-card-bg py-1 shadow-md"
+      className="absolute left-0 top-full z-20 mt-2 min-w-[180px] rounded-card border border-border bg-card-bg py-1 shadow-card"
     >
       <li>
         <button
           role="option"
           aria-selected={selected === null}
           onClick={() => onSelect(null)}
-          className="w-full px-3 py-2 text-left text-sm text-secondary-text hover:bg-gray-50"
+          className="w-full px-3 py-2 text-left text-sm text-secondary-text hover:bg-surface-muted"
         >
           All
         </button>
@@ -32,9 +32,9 @@ export default function FilterDropdown({ options, selected, onSelect }: Props) {
             aria-selected={selected === option.value}
             onClick={() => onSelect(option.value)}
             className={[
-              'w-full px-3 py-2 text-left text-sm hover:bg-gray-50',
+              'w-full px-3 py-2 text-left text-sm hover:bg-surface-muted',
               selected === option.value
-                ? 'font-semibold text-link'
+                ? 'font-semibold text-brand-primary'
                 : 'text-primary-text',
             ].join(' ')}
           >

@@ -1,278 +1,268 @@
 {
-  "meta": {
-    "spec_id": "006",
-    "name": "cart_checkout_shopcart_style",
-    "source": "Image 3",
-    "last_updated": "2026-04-13"
-  },
-  "page": {
-    "type": "cart_checkout",
-    "background_color": "#FFFFFF",
-    "layout": "review_plus_payment",
-    "max_width": "1320px",
-    "sections": [
-      "review_item_shipping",
-      "order_summary",
-      "payment_details"
+  "page": "Checkout",
+  "layout": {
+    "type": "two-column",
+    "columns": [
+      { "id": "left", "width": "60%", "sections": ["reviewItemAndShipping", "deliveryInformation"] },
+      { "id": "right", "width": "40%", "sections": ["orderSummary"] }
     ]
   },
-  "layout": {
-    "desktop": {
-      "columns": "1.7fr 1fr",
-      "gap": "24px",
-      "align": "start"
+  "theme": {
+    "colors": {
+      "background": "#ffffff",
+      "surface": "#ffffff",
+      "surfaceMuted": "#f5f5f5",
+      "border": "#e5e7eb",
+      "textPrimary": "#111827",
+      "textSecondary": "#9ca3af",
+      "textLabel": "#374151",
+      "accent": "#1a3d2b",
+      "accentText": "#ffffff",
+      "selectedRadio": "#1a3d2b",
+      "unselectedRadio": "#d1d5db",
+      "cardHighlight": "#dcfce7"
     },
-    "tablet": {
-      "columns": "1fr",
-      "gap": "20px"
+    "typography": {
+      "headingLarge": { "fontSize": "22px", "fontWeight": "700", "color": "textPrimary" },
+      "headingMedium": { "fontSize": "18px", "fontWeight": "700", "color": "textPrimary" },
+      "productName": { "fontSize": "18px", "fontWeight": "700", "color": "textPrimary" },
+      "price": { "fontSize": "18px", "fontWeight": "600", "color": "textPrimary" },
+      "label": { "fontSize": "14px", "fontWeight": "600", "color": "textLabel" },
+      "value": { "fontSize": "14px", "fontWeight": "400", "color": "textSecondary" },
+      "body": { "fontSize": "14px", "fontWeight": "400", "color": "textPrimary" }
     },
-    "mobile": {
-      "columns": "1fr",
-      "gap": "16px"
+    "spacing": {
+      "cardPadding": "24px",
+      "sectionGap": "16px",
+      "rowGap": "12px",
+      "columnGap": "24px"
+    },
+    "borderRadius": {
+      "card": "12px",
+      "button": "999px",
+      "input": "8px",
+      "productImage": "8px"
+    },
+    "shadows": {
+      "card": "0 1px 4px rgba(0,0,0,0.06)"
     }
   },
   "sections": {
-    "review_item_shipping": {
-      "header": {
-        "text": "Review Item And Shipping",
-        "font_size": "18px",
-        "font_weight": "700",
-        "color": "#111827"
-      },
-      "product_card": {
-        "background": "#FFFFFF",
-        "border": "1px solid #E5E7EB",
-        "border_radius": "10px",
-        "padding": "18px",
-        "layout": "image_info_price",
-        "image": {
-          "size": "180px",
-          "background": "#F3F4F6",
-          "border_radius": "10px",
-          "object_fit": "contain"
-        },
-        "product_name": {
-          "font_size": "28px",
-          "font_weight": "700",
-          "color": "#111827"
-        },
-        "variant_text": {
-          "template": "Color: {colorName}",
-          "font_size": "16px",
-          "color": "#4B5563"
-        },
-        "price": {
-          "font_size": "24px",
-          "font_weight": "700",
-          "format": "$0.00"
-        },
-        "quantity": {
-          "template": "Quantity: {quantity}",
-          "font_size": "16px",
-          "font_weight": "600",
-          "format": "02"
-        }
-      },
-      "delivery_information": {
-        "header": {
-          "text": "Delivery Information",
-          "font_size": "18px",
-          "font_weight": "700"
-        },
-        "edit_action": {
-          "label": "Edit Information",
-          "style": "gray_pill"
-        },
-        "rows": [
-          "Name",
-          "Address",
-          "City",
-          "Zip Code",
-          "Mobile",
-          "Email"
-        ],
-        "row_style": {
-          "label_weight": "600",
-          "value_color": "#6B7280"
-        }
-      }
-    },
-    "order_summary": {
-      "header": {
-        "text": "Order Summery",
-        "font_size": "18px",
-        "font_weight": "700"
-      },
-      "coupon": {
-        "input_placeholder": "Enter Coupon Code",
-        "apply_button": {
-          "label": "Apply coupon",
-          "background": "#00553A",
-          "text_color": "#FFFFFF",
-          "shape": "pill"
-        }
-      }
-    },
-    "payment_details": {
-      "header": {
-        "text": "Payment Details",
-        "font_size": "18px",
-        "font_weight": "700"
-      },
-      "methods": [
+    "reviewItemAndShipping": {
+      "id": "reviewItemAndShipping",
+      "title": "Review Item And Shipping",
+      "titleStyle": "headingLarge",
+      "border": true,
+      "borderColor": "border",
+      "borderRadius": "card",
+      "padding": "cardPadding",
+      "items": [
         {
-          "key": "cod",
-          "label": "Cash on Delivery",
-          "type": "radio"
-        },
-        {
-          "key": "shopcart_card",
-          "label": "Shopcart Card",
-          "type": "radio"
-        },
-        {
-          "key": "paypal",
-          "label": "Paypal",
-          "type": "radio"
-        },
-        {
-          "key": "credit_debit",
-          "label": "Credit or Debit card",
-          "type": "radio",
-          "selected": true
-        }
-      ],
-      "card_brand_row": [
-        "amazon",
-        "mastercard",
-        "visa"
-      ],
-      "card_form": {
-        "fields": [
-          {
-            "key": "email",
-            "label": "Email*",
-            "placeholder": "Type here..."
+          "id": "cartItem1",
+          "type": "cartItem",
+          "image": {
+            "src": "airpods_max_pink.png",
+            "alt": "AirPods Max - Pink",
+            "backgroundColor": "surfaceMuted",
+            "width": "100px",
+            "height": "100px",
+            "borderRadius": "productImage"
           },
-          {
-            "key": "card_holder_name",
-            "label": "Card Holder Name*",
-            "placeholder": "Type here..."
-          },
-          {
-            "key": "card_number",
-            "label": "Card Number*",
-            "placeholder": "0000 0000 0000 0000"
-          },
-          {
-            "key": "expiry",
-            "label": "Expiry*",
-            "placeholder": "MM/YY"
-          },
-          {
-            "key": "cvv",
-            "label": "CVV*",
-            "placeholder": "123"
+          "name": "Airpods- Max",
+          "nameStyle": "productName",
+          "attributes": [
+            { "key": "Color", "value": "Pink" }
+          ],
+          "price": "$549.00",
+          "priceStyle": "price",
+          "quantity": {
+            "label": "Quantity",
+            "value": "01"
           }
-        ]
-      },
-      "primary_cta": {
-        "label": "Place Order",
-        "height": "48px",
-        "background": "#00553A",
-        "text_color": "#FFFFFF",
-        "border_radius": "999px"
-      }
-    }
-  },
-  "empty_state": {
-    "title": "Your cart is empty",
-    "description": "Add products to continue checkout.",
-    "cta": {
-      "label": "Continue Shopping",
-      "target": "/catalog"
-    }
-  },
-  "design_tokens": {
-    "colors": {
-      "brand_primary": "#00553A",
-      "text_primary": "#111827",
-      "text_secondary": "#6B7280",
-      "surface": "#FFFFFF",
-      "surface_muted": "#F3F4F6",
-      "border": "#E5E7EB",
-      "radio_active": "#00A63E"
+        }
+      ]
     },
-    "typography": {
-      "font_family": "Poppins, sans-serif",
-      "page_heading": {
-        "size": "18px",
-        "weight": "700"
-      },
-      "product_name": {
-        "size": "28px",
-        "weight": "700"
-      },
-      "label": {
-        "size": "16px",
-        "weight": "600"
-      },
-      "body": {
-        "size": "16px",
-        "weight": "400"
+    "deliveryInformation": {
+      "id": "deliveryInformation",
+      "title": "Delivery Information",
+      "titleStyle": "headingLarge",
+      "border": true,
+      "borderColor": "border",
+      "borderRadius": "card",
+      "padding": "cardPadding",
+      "actions": [
+        {
+          "id": "editInformation",
+          "label": "Edit Information",
+          "type": "button",
+          "variant": "ghost",
+          "style": {
+            "backgroundColor": "surfaceMuted",
+            "borderRadius": "button",
+            "fontSize": "13px",
+            "fontWeight": "500",
+            "padding": "8px 16px"
+          }
+        }
+      ],
+      "fields": [
+        { "label": "Name", "value": "Wade Warren" },
+        { "label": "Address", "value": "4140 Parker Rd. Allentown, New Mexico 31134" },
+        { "label": "City", "value": "Austin" },
+        { "label": "Zip Code", "value": "85486" },
+        { "label": "Mobile", "value": "+447700960054" },
+        { "label": "Email", "value": "georgia.young@example.com" }
+      ],
+      "fieldLayout": {
+        "type": "key-value-rows",
+        "labelStyle": "label",
+        "valueStyle": "value",
+        "rowGap": "12px"
       }
     },
-    "radius": {
-      "card": "10px",
-      "input": "8px",
-      "pill": "999px"
-    },
-    "spacing": {
-      "section_gap": "20px",
-      "card_padding": "18px",
-      "field_gap": "14px"
-    },
-    "shadows": {
-      "card": "none"
-    }
-  },
-  "interaction_patterns": {
-    "coupon_apply": {
-      "trigger": "click_apply_coupon",
-      "behavior": "validates_coupon_and_updates_totals"
-    },
-    "payment_method_selection": {
-      "trigger": "radio_select",
-      "behavior": "switches_payment_form_state"
-    },
-    "edit_delivery_info": {
-      "trigger": "click_edit_information",
-      "behavior": "opens_delivery_editor"
-    },
-    "place_order": {
-      "trigger": "click_place_order",
-      "states": [
-        "idle",
-        "loading",
-        "success",
-        "error"
+    "orderSummary": {
+      "id": "orderSummary",
+      "title": "Order Summery",
+      "titleStyle": "headingLarge",
+      "border": false,
+      "padding": "cardPadding",
+      "subsections": [
+        {
+          "id": "coupon",
+          "type": "couponInput",
+          "input": {
+            "placeholder": "Enter Coupon Code",
+            "backgroundColor": "surfaceMuted",
+            "borderRadius": "input",
+            "padding": "12px 16px",
+            "fontSize": "14px",
+            "color": "textSecondary"
+          },
+          "button": {
+            "label": "Apply coupon",
+            "backgroundColor": "accent",
+            "textColor": "accentText",
+            "borderRadius": "button",
+            "fontSize": "14px",
+            "fontWeight": "600",
+            "padding": "12px 20px"
+          }
+        },
+        {
+          "id": "paymentDetails",
+          "title": "Payment Details",
+          "titleStyle": "headingMedium",
+          "type": "radioGroup",
+          "options": [
+            {
+              "id": "cashOnDelivery",
+              "label": "Cash on Delivery",
+              "selected": false
+            },
+            {
+              "id": "shopcartCard",
+              "label": "Shopcart Card",
+              "selected": false
+            },
+            {
+              "id": "paypal",
+              "label": "Paypal",
+              "selected": false
+            },
+            {
+              "id": "creditDebitCard",
+              "label": "Credit or Debit card",
+              "selected": true,
+              "subContent": {
+                "type": "cardBrands",
+                "brands": [
+                  {
+                    "id": "amazon",
+                    "label": "Amazon Pay",
+                    "logoType": "text",
+                    "logoText": "amazon",
+                    "style": { "border": "none" }
+                  },
+                  {
+                    "id": "mastercard",
+                    "label": "Mastercard",
+                    "logoType": "icon",
+                    "style": { "border": "2px solid #22c55e", "borderRadius": "6px", "padding": "4px 8px" }
+                  },
+                  {
+                    "id": "visa",
+                    "label": "Visa",
+                    "logoType": "text",
+                    "logoText": "VISA",
+                    "style": { "border": "none", "fontSize": "20px", "fontWeight": "700", "color": "#1a1aff" }
+                  }
+                ]
+              },
+              "fields": [
+                {
+                  "id": "email",
+                  "label": "Email*",
+                  "type": "text",
+                  "placeholder": "Type here...",
+                  "required": true
+                },
+                {
+                  "id": "cardHolderName",
+                  "label": "Card Holder Name*",
+                  "type": "text",
+                  "placeholder": "Type here...",
+                  "required": true
+                }
+              ]
+            }
+          ],
+          "radioStyle": {
+            "selectedColor": "selectedRadio",
+            "unselectedColor": "unselectedRadio",
+            "labelStyle": "body",
+            "gap": "12px"
+          }
+        }
       ]
     }
   },
-  "sample_data": {
-    "item": {
-      "name": "Airpods- Max",
-      "color": "Pink",
-      "price": 549.0,
-      "quantity": 1
+  "components": {
+    "input": {
+      "backgroundColor": "surfaceMuted",
+      "border": "none",
+      "borderRadius": "input",
+      "padding": "12px 16px",
+      "fontSize": "14px",
+      "placeholderColor": "textSecondary",
+      "focusBorder": "1px solid accent"
     },
-    "delivery_info": {
-      "name": "Wade Warren",
-      "address": "4140 Parker Rd. Allentown, New Mexico 31134",
-      "city": "Austin",
-      "zipCode": "85486",
-      "mobile": "+447700960054",
-      "email": "georgia.young@example.com"
+    "radioButton": {
+      "size": "18px",
+      "selectedFillColor": "selectedRadio",
+      "unselectedBorderColor": "unselectedRadio",
+      "labelGap": "10px"
+    },
+    "card": {
+      "backgroundColor": "surface",
+      "border": "1px solid border",
+      "borderRadius": "card",
+      "padding": "cardPadding",
+      "shadow": "card"
+    },
+    "primaryButton": {
+      "backgroundColor": "accent",
+      "textColor": "accentText",
+      "borderRadius": "button",
+      "fontWeight": "600",
+      "padding": "12px 24px",
+      "hoverOpacity": 0.9
+    },
+    "ghostButton": {
+      "backgroundColor": "surfaceMuted",
+      "textColor": "textPrimary",
+      "borderRadius": "button",
+      "fontWeight": "500",
+      "padding": "8px 16px"
     }
   }
 }

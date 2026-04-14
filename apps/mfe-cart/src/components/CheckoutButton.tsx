@@ -12,11 +12,11 @@ export default function CheckoutButton({
   return (
     <button
       type="button"
-      className="checkout-button"
+      className="inline-flex min-h-12 w-full items-center justify-center rounded-pill bg-brand-primary px-5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
       onClick={onClick}
       disabled={disabled || isLoading}
     >
-      {isLoading ? 'Placing order...' : 'Place order'}
+      {isLoading ? 'Placing order...' : 'Place Order'}
     </button>
   )
 }

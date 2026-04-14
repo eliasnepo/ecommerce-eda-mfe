@@ -27,9 +27,9 @@ export default function ProductCard({ product }: Props) {
   return (
     <article
       aria-label={product.name}
-      className="relative flex h-full flex-col overflow-hidden rounded-card bg-card-bg pb-3"
+      className="relative flex h-full flex-col overflow-hidden rounded-card bg-card-bg shadow-card"
     >
-      <div className="relative h-48 overflow-hidden bg-gray-100">
+      <div className="relative aspect-square overflow-hidden rounded-card bg-surface-muted">
         {product.imageUrl ? (
           <img
             src={product.imageUrl}
@@ -38,27 +38,30 @@ export default function ProductCard({ product }: Props) {
             loading="lazy"
           />
         ) : (
-          <div className="h-full w-full bg-gray-100" />
+          <div className="h-full w-full bg-surface-muted" />
         )}
         <WishlistButton productId={product.id} />
       </div>
 
-      <div className="flex flex-1 flex-col px-2.5 pt-2.5">
+      <div className="flex flex-1 flex-col gap-2 px-3 pb-4 pt-3">
         <p
           title={product.name}
-          className="mb-1 truncate text-[13px] font-medium text-primary-text"
+          className="m-0 line-clamp-2 text-base font-semibold text-primary-text"
         >
           {product.name}
         </p>
-        <StarRating rating={4} reviewCount="-" />
-        <p className="mt-1 text-[15px] font-bold text-primary-text">
+        <p className="m-0 text-sm text-secondary-text line-clamp-1">
+          {product.description ?? product.category ?? 'High quality audio experience'}
+        </p>
+        <StarRating rating={4} reviewCount={121} />
+        <p className="m-0 text-xl font-bold text-primary-text">
           {formatPrice(product.price)}
         </p>
         <button
           onClick={handleAddToCart}
-          className="mt-auto w-full rounded-pill border border-border py-1 text-xs text-primary-text hover:bg-gray-50"
+          className="mt-auto w-full rounded-pill border border-brand-primary py-2 text-sm font-semibold text-brand-primary transition hover:bg-brand-primary hover:text-white"
         >
-          Add to cart
+          Add to Cart
         </button>
       </div>
     </article>

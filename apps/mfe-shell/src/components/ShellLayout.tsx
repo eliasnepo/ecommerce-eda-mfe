@@ -3,9 +3,9 @@ import Header from './Header'
 
 export default function ShellLayout() {
   return (
-    <div className="shell-page">
+    <div className="min-h-screen bg-page-bg">
       <Header />
-      <main className="shell-main">
+      <main className="mx-auto w-full max-w-shell px-4 py-6">
         <Outlet />
       </main>
     </div>
