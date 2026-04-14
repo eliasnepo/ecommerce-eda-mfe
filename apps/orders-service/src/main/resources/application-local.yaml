@@ -1,0 +1,5 @@
+logging:
+  level:
+    com.commerce.orders: DEBUG
+    org.springframework.kafka: INFO
+    org.hibernate.SQL: DEBUG

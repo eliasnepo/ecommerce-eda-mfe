@@ -1,0 +1,14 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: product
+    open-in-view: false
+  flyway:
+    schemas: product
+    baseline-on-migrate: true
+  graphql:
+    graphiql:
+      enabled: false

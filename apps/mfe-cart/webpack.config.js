@@ -6,7 +6,7 @@ const dotenv = require('dotenv')
 
 dotenv.config({ path: path.resolve(__dirname, '.env') })
 
-const orderApiMode = process.env.ORDER_API_MODE || 'mock'
+const orderApiMode = process.env.ORDER_API_MODE || 'gateway'
 const orderApiUrl = process.env.ORDER_API_URL || 'http://localhost:8080/api/orders'
 const orderUserId = process.env.ORDER_USER_ID || '1'
 
