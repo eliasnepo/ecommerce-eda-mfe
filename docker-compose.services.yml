@@ -8,11 +8,11 @@ services:
     depends_on:
       - product-service
       - order-service
-      - ai-service
+      - recommendations-ai-service
     environment:
       SPRING_CLOUD_GATEWAY_ROUTES_0_URI: http://product-service:8081
       SPRING_CLOUD_GATEWAY_ROUTES_1_URI: http://order-service:8082
-      SPRING_CLOUD_GATEWAY_ROUTES_2_URI: http://ai-service:8083
+      SPRING_CLOUD_GATEWAY_ROUTES_2_URI: http://recommendations-ai-service:8083
 
   product-service:
     build: ./apps/product-service
@@ -30,10 +30,12 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ecommerce
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
-  ai-service:
-    build: ./apps/ai-service
+  recommendations-ai-service:
+    build: ./apps/recommendations-ai-service
     ports:
       - "8083:8083"
     environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ecommerce
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      SPRING_AI_OLLAMA_BASE_URL: http://ollama:11434
+      SPRING_AI_OLLAMA_CHAT_OPTIONS_MODEL: llama3.2

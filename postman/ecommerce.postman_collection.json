@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "a1b2c3d4-e5f6-7890-abcd-123456789abc",
     "name": "Ecommerce EDA MFE",
-    "description": "Full system collection for the Ecommerce EDA MFE platform.\n\nServices:\n- **API Gateway** — :8080 (Phase 3 ✅)\n- **Product Service** — :8081 (Phase 2 ✅)\n- **Order Service** — :8082 (Phase 6, not yet implemented)\n- **AI Service** — :8083 (Phase 7, not yet implemented)\n\nPrerequisites:\n1. `docker compose -f docker-compose.infra.yml up -d` from repo root\n2. Start the relevant service(s)\n3. Select the **Ecommerce — Local** environment",
+    "description": "Full system collection for the Ecommerce EDA MFE platform.\n\nServices:\n- **API Gateway** — :8080 (Phase 3 ✅)\n- **Product Service** — :8081 (Phase 2 ✅)\n- **Order Service** — :8082 (Phase 6 ✅)\n- **Recommendations AI Service** — :8083 (Phase 7 ✅)\n\nPrerequisites:\n1. `docker compose -f docker-compose.infra.yml up -d` from repo root (includes Ollama + llama3.2 pull)\n2. Start the relevant service(s)\n3. Select the **Ecommerce — Local** environment",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -497,7 +497,7 @@
         },
         {
           "name": "Recommendations (via Gateway)",
-          "description": "REST requests routed through the gateway to AI Service (:8083). ⚠️ AI Service not yet implemented — Phase 7.",
+          "description": "REST requests routed through the gateway to Recommendations AI Service (:8083). Consumes `order.created` Kafka events and uses Ollama (llama3.2) to generate personalised product suggestions.",
           "item": [
             {
               "name": "Get Recommendations for User",
@@ -522,7 +522,7 @@
                   "host": ["{{gateway_url}}"],
                   "path": ["api", "ai", "recommendations", "{{user_id}}"]
                 },
-                "description": "Fetches AI-powered product recommendations via the gateway → AI Service."
+                "description": "Fetches AI-powered product recommendations via the gateway → Recommendations AI Service. Builds a prompt from the user's last 10 orders and calls Ollama (llama3.2). Returns `{ userId, historyOrdersUsed, insights, recommendations: [{ productName, category, reason }] }` with up to 3 products. First call may take 15–60 s on CPU-only Ollama. 502 is returned if Ollama is unavailable."
               },
               "response": []
             }
@@ -783,7 +783,7 @@
     },
     {
       "name": "Order Service",
-      "description": "Spring Boot (Kotlin) REST service on :8082. Persists orders in PostgreSQL and publishes OrderCreated events to Kafka.\n\n⚠️ Not yet implemented — Phase 6.",
+      "description": "Spring Boot (Kotlin) REST service on :8082. Persists orders in PostgreSQL and publishes `order.created` events to Kafka (consumed by Recommendations AI Service).\n\nStart: `./gradlew bootRun --args='--spring.profiles.active=local'` from `apps/orders-service/`",
       "item": [
         {
           "name": "Actuator",
@@ -873,8 +873,8 @@
       ]
     },
     {
-      "name": "AI Service",
-      "description": "Spring Boot + Spring AI service on :8083. Consumes OrderCreated events from Kafka and exposes product recommendations backed by an LLM.\n\n⚠️ Not yet implemented — Phase 7.",
+      "name": "Recommendations AI Service",
+      "description": "Spring Boot 3.3 + Spring AI service on :8083. Consumes `order.created` Kafka events, persists order history in the `ai_history` PostgreSQL schema, and exposes product recommendations via Ollama (llama3.2).\n\nStart: `./gradlew bootRun --args='--spring.profiles.active=local'` from `apps/recommendations-ai-service/`\n\nPrerequisites: Ollama must be running (`docker compose -f docker-compose.infra.yml up -d`) with llama3.2 pulled.",
       "item": [
         {
           "name": "Actuator",
@@ -907,7 +907,7 @@
                   "host": ["{{ai_service_url}}"],
                   "path": ["api", "ai", "recommendations", "{{user_id}}"]
                 },
-                "description": "Builds a prompt from the user's order history and calls the configured LLM (OpenAI / Ollama / Anthropic). Returns up to 3 ranked product suggestions with a reason for each."
+                "description": "Builds a prompt from the user's last 10 orders and calls Ollama (llama3.2). Returns `{ userId, historyOrdersUsed, insights, recommendations: [{ productName, category, reason }] }` with up to 3 products. Place at least one order first to generate history. First call may take 15–60 s on CPU-only Ollama."
               },
               "response": []
             }
